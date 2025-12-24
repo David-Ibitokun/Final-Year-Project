@@ -1,5 +1,5 @@
 {
-  "creation_date": "2025-12-24 13:32:26",
+  "creation_date": "2025-12-24 22:19:45",
   "temporal_coverage": {
     "start_year": 1990,
     "end_year": 2023,
@@ -18,9 +18,12 @@
     ]
   },
   "crops": {
-    "total": 3,
+    "total": 6,
     "list": [
+      "Cassava",
+      "Maize",
       "Millet",
+      "Rice",
       "Sorghum",
       "Yams"
     ]
@@ -29,7 +32,7 @@
     "fnn": {
       "description": "Annual aggregated data for Feedforward Neural Networks",
       "shape": [
-        1836,
+        3672,
         33
       ],
       "granularity": "Annual",
@@ -72,7 +75,7 @@
     "lstm": {
       "description": "Monthly time-series data for LSTM models",
       "shape": [
-        22032,
+        44064,
         38
       ],
       "granularity": "Monthly",
@@ -120,7 +123,7 @@
     "hybrid": {
       "description": "Monthly + Static features for Hybrid models",
       "shape": [
-        22032,
+        44064,
         41
       ],
       "granularity": "Monthly",
