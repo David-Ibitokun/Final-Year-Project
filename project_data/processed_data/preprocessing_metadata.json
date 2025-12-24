@@ -1,0 +1,177 @@
+{
+  "creation_date": "2025-12-24 13:32:26",
+  "temporal_coverage": {
+    "start_year": 1990,
+    "end_year": 2023,
+    "total_years": 34
+  },
+  "spatial_coverage": {
+    "geopolitical_zones": 6,
+    "states": 18,
+    "zones_list": [
+      "North-Central",
+      "North-East",
+      "North-West",
+      "South-East",
+      "South-South",
+      "South-West"
+    ]
+  },
+  "crops": {
+    "total": 3,
+    "list": [
+      "Millet",
+      "Sorghum",
+      "Yams"
+    ]
+  },
+  "datasets": {
+    "fnn": {
+      "description": "Annual aggregated data for Feedforward Neural Networks",
+      "shape": [
+        1836,
+        33
+      ],
+      "granularity": "Annual",
+      "features": [
+        "Year",
+        "Geopolitical_Zone",
+        "State",
+        "Avg_Temp_C",
+        "Min_Temp_C",
+        "Max_Temp_C",
+        "Temp_Range_C",
+        "Rainfall_mm",
+        "Rainy_Days",
+        "Max_Daily_Rainfall_mm",
+        "Rainfall_Intensity",
+        "Avg_Humidity_Percent",
+        "Min_Humidity_Percent",
+        "Max_Humidity_Percent",
+        "CO2_ppm",
+        "CO2_Growth_Rate_ppm_per_year",
+        "Heat_Stress_Days",
+        "Cold_Stress_Days",
+        "Drought_Index",
+        "Flood_Risk_Index",
+        "Latitude",
+        "Longitude",
+        "Elevation_m",
+        "Soil_pH",
+        "Organic_Matter_Percent",
+        "Nitrogen_ppm",
+        "Phosphorus_ppm",
+        "Potassium_ppm",
+        "Cation_Exchange_Capacity",
+        "Bulk_Density",
+        "Water_Holding_Capacity_Percent",
+        "Crop",
+        "Yield_tonnes_per_ha"
+      ]
+    },
+    "lstm": {
+      "description": "Monthly time-series data for LSTM models",
+      "shape": [
+        22032,
+        38
+      ],
+      "granularity": "Monthly",
+      "features": [
+        "Date",
+        "Year",
+        "Month",
+        "Geopolitical_Zone",
+        "State",
+        "Avg_Temp_C",
+        "Min_Temp_C",
+        "Max_Temp_C",
+        "Temp_Range_C",
+        "Heat_Stress_Days",
+        "Cold_Stress_Days",
+        "Rainfall_mm",
+        "Rainy_Days",
+        "Max_Daily_Rainfall_mm",
+        "Rainfall_Intensity",
+        "Drought_Index",
+        "Flood_Risk_Index",
+        "Avg_Humidity_Percent",
+        "Min_Humidity_Percent",
+        "Max_Humidity_Percent",
+        "CO2_ppm",
+        "CO2_Growth_Rate_ppm_per_year",
+        "Latitude",
+        "Longitude",
+        "Elevation_m",
+        "Soil_Type",
+        "Soil_Texture",
+        "Soil_pH",
+        "Organic_Matter_Percent",
+        "Nitrogen_ppm",
+        "Phosphorus_ppm",
+        "Potassium_ppm",
+        "Cation_Exchange_Capacity",
+        "Bulk_Density",
+        "Water_Holding_Capacity_Percent",
+        "Is_Growing_Season",
+        "Crop",
+        "Yield_tonnes_per_ha"
+      ]
+    },
+    "hybrid": {
+      "description": "Monthly + Static features for Hybrid models",
+      "shape": [
+        22032,
+        41
+      ],
+      "granularity": "Monthly",
+      "features": [
+        "Date",
+        "Year",
+        "Month",
+        "Geopolitical_Zone",
+        "State",
+        "Avg_Temp_C",
+        "Min_Temp_C",
+        "Max_Temp_C",
+        "Temp_Range_C",
+        "Heat_Stress_Days",
+        "Cold_Stress_Days",
+        "Rainfall_mm",
+        "Rainy_Days",
+        "Max_Daily_Rainfall_mm",
+        "Rainfall_Intensity",
+        "Drought_Index",
+        "Flood_Risk_Index",
+        "Avg_Humidity_Percent",
+        "Min_Humidity_Percent",
+        "Max_Humidity_Percent",
+        "CO2_ppm",
+        "CO2_Growth_Rate_ppm_per_year",
+        "Latitude",
+        "Longitude",
+        "Elevation_m",
+        "Soil_Type",
+        "Soil_Texture",
+        "Soil_pH",
+        "Organic_Matter_Percent",
+        "Nitrogen_ppm",
+        "Phosphorus_ppm",
+        "Potassium_ppm",
+        "Cation_Exchange_Capacity",
+        "Bulk_Density",
+        "Water_Holding_Capacity_Percent",
+        "Is_Growing_Season",
+        "Crop",
+        "Yield_tonnes_per_ha",
+        "Growing_Degree_Days",
+        "Cumulative_Rainfall",
+        "Days_Into_Season"
+      ]
+    }
+  },
+  "splits": {
+    "train": "1990-2016",
+    "validation": "2017-2019",
+    "test": "2020-2023"
+  }
+}
