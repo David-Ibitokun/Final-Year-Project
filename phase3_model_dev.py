@@ -35,19 +35,20 @@
     "import matplotlib.pyplot as plt\n",
     "import seaborn as sns\n",
     "from pathlib import Path\n",
-    "import json\n",
     "import warnings\n",
     "warnings.filterwarnings('ignore')\n",
     "\n",
-    "# Deep Learning\n",
-    "import tensorflow as tf\n",
-    "from tensorflow import keras\n",
-    "from tensorflow.keras import layers, models, callbacks\n",
-    "from tensorflow.keras.optimizers import Adam\n",
+    "# Deep Learning (add # type: ignore to silence editor import warnings when TF not installed)\n",
+    "import tensorflow as tf  # type: ignore\n",
+    "from tensorflow.keras import layers, models, callbacks  # type: ignore\n",
+    "from tensorflow.keras.optimizers import Adam  # type: ignore\n",
     "\n",
     "# Scikit-learn\n",
     "from sklearn.preprocessing import StandardScaler, LabelEncoder\n",
     "from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_absolute_percentage_error\n",
+    "\n",
+    "# Utilities\n",
+    "import joblib\n",
     "\n",
     "# Display settings\n",
     "pd.set_option('display.max_columns', None)\n",
@@ -1166,7 +1167,6 @@
     "print(\"  ✓ Models saved\")\n",
     "\n",
     "# Save scalers\n",
-    "import joblib\n",
     "joblib.dump(fnn_scaler, models_dir / 'fnn_scaler.pkl')\n",
     "joblib.dump(lstm_scaler, models_dir / 'lstm_scaler.pkl')\n",
     "joblib.dump(temporal_scaler, models_dir / 'temporal_scaler.pkl')\n",
@@ -1219,7 +1219,7 @@
     "            'n_temporal_features': n_temp_feat,\n",
     "            'n_static_features': X_hybrid_static_train_scaled.shape[1]\n",
     "        }\n",
-    "
+    
     }
 }
 
