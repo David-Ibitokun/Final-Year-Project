@@ -614,14 +614,14 @@
     "print(\"\\nTraining LSTM model...\")\n",
     "history_lstm = lstm_model.fit(\n",
     "    X_lstm_train_scaled, y_lstm_train,\n",
-    "    validation_data=(X_lstm_val_scaled, y_lstm_val),
-    epochs=200,
-    batch_size=32,
-    callbacks=[early_stop_lstm, reduce_lr_lstm],
-    verbose=1
-)
-
-print("\n✓ LSTM model training complete!")
+    "    validation_data=(X_lstm_val_scaled, y_lstm_val),\n",
+    "    epochs=200,\n",
+    "    batch_size=32,\n",
+    "    callbacks=[early_stop_lstm, reduce_lr_lstm],\n",
+    "    verbose=1\n",
+    ")"
+    "\n",
+    "print(\"\\n✓ LSTM model training complete!\")"
    ]
   },
   {
@@ -1207,18 +1207,19 @@ print("\n✓ LSTM model training complete!")
     "        },\n",
     "        'lstm': {\n",
     "            'architecture': 'Long Short-Term Memory',\n",
-    "            'test_rmse': float(lstm_metrics_test['RMSE']),
-            'test_r2': float(lstm_metrics_test['R2']),
-            'sequence_length': sequence_length,
-            'n_temporal_features': n_temp_feat
-        },
-        'hybrid': {
-            'architecture': 'Hybrid LSTM + Dense',
-            'test_rmse': float(hybrid_metrics_test['RMSE']),
-            'test_r2': float(hybrid_metrics_test['R2']),
-            'n_temporal_features': n_temp_feat,
-            'n_static_features': X_hybrid_static_train_scaled.shape[1]
-        }
+    "            'test_rmse': float(lstm_metrics_test['RMSE']),\n",
+    "            'test_r2': float(lstm_metrics_test['R2']),\n",
+    "            'sequence_length': sequence_length,\n",
+    "            'n_temporal_features': n_temp_feat\n",
+    "        },\n",
+    "        'hybrid': {\n",
+    "            'architecture': 'Hybrid LSTM + Dense',\n",
+    "            'test_rmse': float(hybrid_metrics_test['RMSE']),\n",
+    "            'test_r2': float(hybrid_metrics_test['R2']),\n",
+    "            'n_temporal_features': n_temp_feat,\n",
+    "            'n_static_features': X_hybrid_static_train_scaled.shape[1]\n",
+    "        }\n",
+    "
     }
 }
 
