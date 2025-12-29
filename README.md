@@ -269,15 +269,9 @@ Static Features → FNN Branch (64-32) ────┘
 
 ---
 
-## License
-
-[Specify your license]
-
----
-
 ## Author
 
-Final Year Project - [Your Name/Institution]
+Final Year Project - [Ibitokun David/Bells University of Technology]
 
 **Contact**: [Your Email]
 
