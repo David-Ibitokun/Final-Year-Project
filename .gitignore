@@ -34,4 +34,3 @@ build/
 credentials.json
 *.pem
 *.key
-

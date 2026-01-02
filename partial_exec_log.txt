@@ -1,0 +1,66 @@
+Executing notebook: phase4_validation.ipynb
+
+---
+Cell 1 (markdown)
+# Phase 4: Model Validation and Analysis
+
+## Climate-Food Security Deep Learning Models for Nigerian Agriculture
+
+This notebook performs comprehensive validation of the trained models (FNN, LSTM, Hybr
+---
+
+---
+Cell 2 (markdown)
+---
+## Setup and Imports
+---
+
+---
+Cell 3 (markdown)
+### Purpose of Phase 4 Validation
+
+**Why a separate validation notebook?**
+
+Phase 3 trained and initially evaluated the models. Phase 4 performs **comprehensive validation** including:
+
+1. **Deeper Pe
+---
+
+---
+Cell 6 (markdown)
+---
+## 3. Model Predictions and Evaluation
+
+### 3.1 FNN Model Predictions
+---
+
+---
+Cell 7 (markdown)
+### Model Prediction Workflow
+
+**What happens in this section:**
+
+For each model (FNN, LSTM, Hybrid), we:
+1. **Load test data**: Previously unseen samples from 2020-2023
+2. **Preprocess features**: Sc
+---
+
+---
+Cell 13 (markdown)
+---
+## 3.3 LSTM Model Validation
+
+Validate the LSTM model which processes sequential temporal data to capture time-series patterns.
+---
+Encountered stop marker at cell 13.
+
+Executing combined script -> C:\Users\ibito\AppData\Local\Temp\tmpy8tk3m5j.py
+--- STDOUT ---
+
+--- STDERR ---
+2025-12-30 21:51:08.479242: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-30 21:51:16.067575: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-12-30 21:51:16.695846: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+
+Return code: 0

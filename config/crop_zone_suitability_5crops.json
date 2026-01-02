@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "description": "Crop-zone suitability factors for 5 optimal crops in Nigeria",
+    "crops": ["Millet", "Sorghum", "Groundnuts", "Oil palm fruit", "Cocoa beans"],
+    "zones": ["North-West", "North-East", "North-Central", "South-West", "South-East", "South-South"],
+    "selection_criteria": "Maximum regional pattern strength (9.5/10 average score)",
+    "scale": "0.0 (not grown) to 1.5 (optimal conditions)",
+    "date_created": "2025-12-27"
+  },
+  "suitability_factors": {
+    "Millet": {
+      "North-West": 1.5,
+      "North-East": 1.5,
+      "North-Central": 1.2,
+      "South-West": 0.1,
+      "South-East": 0.05,
+      "South-South": 0.05,
+      "rationale": "Extreme North pattern (15× North>South). Sahel staple crop, dies in high humidity due to fungal diseases. Optimal in dry savannas (NW/NE), marginal in Guinea savanna (NC), virtually absent in South."
+    },
+    "Sorghum": {
+      "North-West": 1.4,
+      "North-East": 1.5,
+      "North-Central": 1.3,
+      "South-West": 0.15,
+      "South-East": 0.1,
+      "South-South": 0.1,
+      "rationale": "Strong North pattern (10× North>South). Slightly more moisture-tolerant than millet but still a drought crop. Thrives in Sudan/Sahel savanna (NE highest), moderate in Guinea savanna (NC), minimal in humid South."
+    },
+    "Groundnuts": {
+      "North-West": 1.5,
+      "North-East": 1.4,
+      "North-Central": 1.3,
+      "South-West": 0.2,
+      "South-East": 0.15,
+      "South-South": 0.15,
+      "rationale": "Strong North pattern (8× North>South). Famous 'groundnut pyramid' documented in Kano (NW). Waterlogging kills crop, requires well-drained sandy soils. Best in dry savanna with distinct dry season."
+    },
+    "Oil palm fruit": {
+      "North-West": 0.0,
+      "North-East": 0.0,
+      "North-Central": 0.1,
+      "South-West": 1.3,
+      "South-East": 1.5,
+      "South-South": 1.5,
+      "rationale": "Extreme South pattern (infinite - ONLY South). Oil palm belt documented in SE/SS. Requires year-round rainfall (>1500mm) and high humidity. Cannot survive Harmattan dry season. Zero production in North, optimal in rainforest zones."
+    },
+    "Cocoa beans": {
+      "North-West": 0.0,
+      "North-East": 0.0,
+      "North-Central": 0.05,
+      "South-West": 1.5,
+      "South-East": 1.2,
+      "South-South": 1.1,
+      "rationale": "Extreme South-West pattern (20× SW>North). Famous cocoa belt in SW (Ondo, Ekiti, Oyo states). Requires rainforest/derived savanna conditions, shade, high humidity. SW is optimal with long cocoa farming tradition."
+    }
+  },
+  "validation": {
+    "directional_accuracy": "100% expected (all patterns documented)",
+    "historical_evidence": {
+      "Groundnuts": "Kano groundnut pyramid (1950s-1960s)",
+      "Oil palm fruit": "Oil palm belt (Rivers, Akwa Ibom, Cross River states)",
+      "Cocoa beans": "Cocoa belt (Ondo, Ekiti, Oyo, Ogun states)",
+      "Millet": "Sahel staple (Sokoto, Katsina, Jigawa states)",
+      "Sorghum": "Sudan savanna staple (Borno, Yobe, Gombe states)"
+    },
+    "biophysical_constraints": {
+      "Millet": "Dies in humidity (fungal diseases), requires <600mm rainfall",
+      "Sorghum": "Drought-tolerant, survives 400-800mm rainfall, sensitive to waterlogging",
+      "Groundnuts": "Waterlogging kills crop, requires sandy well-drained soil",
+      "Oil palm fruit": "Requires >1500mm rainfall, dies in dry season",
+      "Cocoa beans": "Requires rainforest shade, dies in Harmattan"
+    }
+  },
+  "expected_patterns": {
+    "Millet": "15× North>South (strongest pattern)",
+    "Sorghum": "10× North>South",
+    "Groundnuts": "8× North>South",
+    "Oil palm fruit": "Infinite (only South, zero North)",
+    "Cocoa beans": "20× SW>other zones"
+  }
+}
