@@ -142,8 +142,8 @@ The combined dataset comprises:
   - Coverage: ~9,150 yield records, ~9,150 production records, ~9,150 area records
 - **Soil data**: 37 state-level profiles with 15 soil properties each
 - **Processed datasets**:
-  - FNN master data: State-level annual records combining climate aggregates, soil properties, and actual yields
-  - LSTM master data: Monthly climate sequences (12 timesteps) linked to annual state-level yields
+  - CNN master data: State-level annual records combining climate aggregates, soil properties, and actual yields
+  - GRU master data: Monthly climate sequences (12 timesteps) linked to annual state-level yields
   - Hybrid master data: Combined temporal climate sequences and static features (soil, location) with actual yields
 
 ## **3.4 Data Preprocessing**
@@ -366,8 +366,8 @@ This chronological split ensures models are evaluated on genuinely future data, 
 3. **Split Organization**:
    - Splits saved in `project_data/train_test_split/` directory
    - Separate folders for each model type:
-     - `fnn/`: Contains train.csv, val.csv, test.csv for FNN model
-     - `lstm/`: Contains train.csv, val.csv, test.csv for LSTM model
+     - `cnn/`: Contains train.csv, val.csv, test.csv for CNN model
+     - `gru/`: Contains train.csv, val.csv, test.csv for GRU model
      - `hybrid/`: Contains train.csv, val.csv, test.csv for Hybrid model
    - Time-series cross-validation with expanding window approach:
      - Multiple training-validation splits with progressively increasing training data
@@ -439,7 +439,7 @@ Three model architectures are developed and compared:
 
 ### **3.5.2 Model Architecture**
 
-#### **Feedforward Neural Network (FNN) Architecture**
+#### **Convolutional Neural Network (CNN) Architecture**
 
 **Input Layer**:
 - Dimension: N features (climate aggregates, derived indices, static features, encoded categorical variables)
@@ -476,7 +476,7 @@ Three model architectures are developed and compared:
 
 **Total Parameters**: Approximately 15,000-20,000 trainable parameters
 
-**FNN Architecture Diagram**:
+**CNN Architecture Diagram**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -539,46 +539,44 @@ Three model architectures are developed and compared:
   Output: 0.95 tonnes/ha (Millet yield prediction)
 ```
 
-#### **Long Short-Term Memory (LSTM) Architecture**
+#### **Gated Recurrent Unit (GRU) Architecture**
 
 **Input Layer**:
 - Dimension: (sequence_length, n_features)
 - Sequence length: 12 months (one growing season)
 - Features per timestep: 4-6 (monthly rainfall, temperature, humidity, CO₂, derived climate indices)
 
-**LSTM Layers**:
-- Architecture: 2 stacked LSTM layers with return sequences
-- Layer 1: 128 LSTM units, return_sequences=True
+**GRU Layers**:
+- Architecture: 2 stacked GRU layers with return sequences
+- Layer 1: 128 GRU units, return_sequences=True
   - Processes input sequences and passes full sequence to next layer
-- Layer 2: 64 LSTM units, return_sequences=False
+- Layer 2: 64 GRU units, return_sequences=False
   - Processes sequences and outputs final hidden state
 - Activation Functions:
   - Sigmoid (σ) for gates: Controls information flow
-  - Tanh for cell state updates: Scales values to [-1, 1]
+  - Tanh for candidate activation: Scales values to [-1, 1]
 
-**LSTM Cell Operations**:
+**GRU Cell Operations**:
 ```
-Forget Gate: f_t = σ(W_f · [h_{t-1}, x_t] + b_f)
-Input Gate: i_t = σ(W_i · [h_{t-1}, x_t] + b_i)
-Cell Candidate: C̃_t = tanh(W_C · [h_{t-1}, x_t] + b_C)
-Cell State: C_t = f_t * C_{t-1} + i_t * C̃_t
-Output Gate: o_t = σ(W_o · [h_{t-1}, x_t] + b_o)
-Hidden State: h_t = o_t * tanh(C_t)
+Reset Gate: r_t = σ(W_r · [h_{t-1}, x_t] + b_r)
+Update Gate: z_t = σ(W_z · [h_{t-1}, x_t] + b_z)
+Candidate State: h̃_t = tanh(W_h · [r_t * h_{t-1}, x_t] + b_h)
+Hidden State: h_t = (1 - z_t) * h_{t-1} + z_t * h̃_t
 ```
 
 **Regularization**:
-- Recurrent Dropout: 0.2 on LSTM connections
-- Standard Dropout: 0.3 after LSTM layers
+- Recurrent Dropout: 0.2 on GRU connections
+- Standard Dropout: 0.3 after GRU layers
 - Gradient Clipping: Prevents exploding gradients
 
 **Dense Layers**:
 - Fully connected layer: 32 neurons with ReLU activation
 - Dropout: 0.3
-- Output layer: As described for FNN
+- Output layer: As described for CNN
 
-**Total Parameters**: Approximately 100,000-150,000 trainable parameters
+**Total Parameters**: Approximately 80,000-120,000 trainable parameters
 
-**LSTM Architecture Diagram**:
+**GRU Architecture Diagram**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -596,23 +594,22 @@ Hidden State: h_t = o_t * tanh(C_t)
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                 LSTM LAYER 1 (128 units)                        │
+│                 GRU LAYER 1 (128 units)                         │
 │                  return_sequences=True                          │
 ├─────────────────────────────────────────────────────────────────┤
 │  For each timestep t:                                           │
-│    f_t = σ(W_f·[h_{t-1}, x_t] + b_f)  ← Forget Gate           │
-│    i_t = σ(W_i·[h_{t-1}, x_t] + b_i)  ← Input Gate            │
-│    C̃_t = tanh(W_C·[h_{t-1}, x_t] + b_C) ← Cell Candidate      │
-│    C_t = f_t * C_{t-1} + i_t * C̃_t    ← Cell State Update     │
-│    o_t = σ(W_o·[h_{t-1}, x_t] + b_o)  ← Output Gate           │
-│    h_t = o_t * tanh(C_t)               ← Hidden State          │
+│    r_t = σ(W_r·[h_{t-1}, x_t] + b_r)  ← Reset Gate            │
+│    z_t = σ(W_z·[h_{t-1}, x_t] + b_z)  ← Update Gate           │
+│    h̃_t = tanh(W_h·[r_t*h_{t-1}, x_t] + b_h) ← Candidate       │
+│    h_t = (1-z_t)*h_{t-1} + z_t*h̃_t   ← Hidden State Update    │
 │                                                                 │
 │  Output: Sequence of 12 hidden states (128-dim each)           │
 │  Recurrent Dropout: 0.2                                         │
+│  Simpler than LSTM: 2 gates instead of 3, no cell state        │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                 LSTM LAYER 2 (64 units)                         │
+│                 GRU LAYER 2 (64 units)                          │
 │                 return_sequences=False                          │
 ├─────────────────────────────────────────────────────────────────┤
 │  Processes all 12 timesteps sequentially                        │
@@ -644,7 +641,7 @@ Hidden State: h_t = o_t * tanh(C_t)
     ...
     Dec: [12mm, 23°C, 52%, 416ppm]
             ↓  [Sequence Processing]
-  LSTM: Captures temporal patterns, dry/wet periods, heat waves
+  GRU: Captures temporal patterns, dry/wet periods, heat waves
             ↓  [Temporal Feature Extraction]
   Dense: Non-linear combination of learned temporal features
             ↓
@@ -654,22 +651,23 @@ Hidden State: h_t = o_t * tanh(C_t)
                  flowering period) that strongly impact final yield
 ```
 
-#### **Hybrid FNN-LSTM Architecture**
+#### **Hybrid CNN-GRU Architecture**
 
-**LSTM Branch** (Temporal Processing):
+**CNN-GRU Branch** (Temporal Processing):
 - Input: Sequential climate data (sequence_length, n_temporal_features)
-- LSTM layers: 2 layers (64 and 32 units)
+- 1D CNN layers: Extract local temporal patterns
+- GRU layers: 2 layers (64 and 32 units) process extracted features
 - Output: 32-dimensional feature vector capturing temporal patterns
 
-**FNN Branch** (Static Feature Processing):
+**Static Feature Branch** (Contextual Processing):
 - Input: Static features (n_static_features)
 - Dense layers: 2 layers (64 and 32 neurons)
 - Output: 32-dimensional feature vector capturing static characteristics
 
 **Fusion Layer**:
 - Concatenation: Combines outputs from both branches
-- Dimension: 64 features (32 from LSTM + 32 from FNN)
-- Purpose: Integrates temporal and static information
+- Dimension: 64 features (32 from CNN-GRU + 32 from Static)
+- Purpose: Integrates temporal sequences with static contextual information
 
 **Post-Fusion Layers**:
 - Dense layer 1: 64 neurons with ReLU activation
@@ -678,9 +676,9 @@ Hidden State: h_t = o_t * tanh(C_t)
 - Dropout: 0.3
 - Output layer: Regression or classification as specified
 
-**Total Parameters**: Approximately 80,000-120,000 trainable parameters
+**Total Parameters**: Approximately 100,000-150,000 trainable parameters
 
-**Hybrid FNN-LSTM Architecture Diagram**:
+**Hybrid CNN-GRU Architecture Diagram**:
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -688,7 +686,7 @@ Hidden State: h_t = o_t * tanh(C_t)
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                               ║
 ║  ┌────────────────────────────┐      ┌─────────────────────────────────┐    ║
-║  │   TEMPORAL INPUT (LSTM)    │      │   STATIC INPUT (FNN)            │    ║
+║  │   TEMPORAL INPUT (CNN-GRU) │      │   STATIC INPUT                  │    ║
 ║  │   12 timesteps × 4-6 feat  │      │   10-15 features                │    ║
 ║  ├────────────────────────────┤      ├─────────────────────────────────┤    ║
 ║  │ Month-by-month sequences:  │      │ • Soil Properties:              │    ║
@@ -709,21 +707,22 @@ Hidden State: h_t = o_t * tanh(C_t)
 ╚═══════════════════════════════════════════════════════════════════════════════╝
               ↓                                        ↓
 ┌───────────────────────────┐          ┌───────────────────────────────┐
-│    LSTM BRANCH            │          │      FNN BRANCH               │
-│  (Temporal Processing)    │          │  (Static Processing)          │
+│    CNN-GRU BRANCH         │          │   STATIC FEATURE BRANCH       │
+│  (Temporal Processing)    │          │  (Contextual Processing)      │
 ├───────────────────────────┤          ├───────────────────────────────┤
 │                           │          │                               │
-│  LSTM Layer 1 (64 units)  │          │  Dense Layer 1 (64 neurons)   │
-│  • return_sequences=True  │          │  • ReLU Activation            │
-│  • Recurrent Dropout: 0.2 │          │  • Dropout: 0.3               │
-│                           │          │  • Batch Normalization        │
-│         ↓                 │          │         ↓                     │
-│                           │          │                               │
-│  LSTM Layer 2 (32 units)  │          │  Dense Layer 2 (32 neurons)   │
-│  • return_sequences=False │          │  • ReLU Activation            │
-│  • Recurrent Dropout: 0.2 │          │  • Dropout: 0.3               │
-│                           │          │                               │
-│         ↓                 │          │         ↓                     │
+│  Conv1D Layer (64 filters)│          │  Dense Layer 1 (64 neurons)   │
+│  • Kernel size: 3         │          │  • ReLU Activation            │
+│  • ReLU Activation        │          │  • Dropout: 0.3               │
+│         ↓                 │          │  • Batch Normalization        │
+│  GRU Layer 1 (64 units)   │          │         ↓                     │
+│  • return_sequences=True  │          │                               │
+│  • Recurrent Dropout: 0.2 │          │  Dense Layer 2 (32 neurons)   │
+│         ↓                 │          │  • ReLU Activation            │
+│  GRU Layer 2 (32 units)   │          │  • Dropout: 0.3               │
+│  • return_sequences=False │          │                               │
+│  • Recurrent Dropout: 0.2 │          │         ↓                     │
+│         ↓                 │          │                               │
 │                           │          │                               │
 │  Output: 32-dim vector    │          │  Output: 32-dim vector        │
 │  (Temporal features)      │          │  (Static features)            │
@@ -793,14 +792,14 @@ Input Example (Rice, North-Central Zone, Benue State, 2020):
 
          ↓ PROCESSING ↓
 
-LSTM Branch learns:
+CNN-GRU Branch learns:
   • Good early-season rainfall (Month 4-5: planting period)
   • Adequate moisture during flowering (Month 7: critical stage)
   • Sufficient rainfall for grain filling (Month 8-9)
   • Moderate temperature throughout (no heat stress)
   → Temporal Feature Vector [0.85, 0.92, 0.78, ...] (32 values)
 
-FNN Branch learns:
+Static Feature Branch learns:
   • Rice suitability for Benue (riverine, high water availability)
   • Soil quality (pH 6.2: optimal for rice, good nutrient levels)
   • North-Central zone characteristics (adequate rainfall, suitable temperature)
@@ -824,8 +823,9 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
                        KEY ADVANTAGES OF HYBRID MODEL
 ═══════════════════════════════════════════════════════════════════════════
 
-✓ LSTM captures: When rainfall occurs (timing matters!)
-✓ FNN captures: Where it occurs (state/soil suitability)
+✓ CNN extracts: Local temporal patterns from climate sequences
+✓ GRU captures: When rainfall occurs (timing matters!)
+✓ Static branch captures: Where it occurs (state/soil suitability)
 ✓ Fusion learns: How temporal and spatial factors interact
 ✓ Result: Better predictions than either branch alone
 
@@ -885,17 +885,17 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
    - Minimum: 1e-6
 
 2. **Batch Size**:
-   - FNN: 32 samples per batch
-   - LSTM: 16-32 samples (smaller due to sequence length and memory constraints)
+   - CNN: 32 samples per batch
+   - GRU: 16-32 samples (smaller due to sequence length and memory constraints)
    - Trade-off: Larger batches for stable gradients vs. smaller batches for generalization
 
 3. **Number of Epochs**:
    - Maximum: 200 epochs
    - Actual: Determined by early stopping (typically 50-100 epochs)
 
-4. **Sequence Length** (LSTM-specific):
+4. **Sequence Length** (GRU-specific):
    - Primary: 12 timesteps (one growing season)
-   - Alternative: 36 timesteps (capturing multi-year effects)
+   - Alternative: 24-36 timesteps (capturing multi-year effects)
 
 #### **Regularization Techniques**
 
@@ -923,7 +923,7 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
 
 1. **Weight Initialization**:
    - Dense layers: He initialization (optimal for ReLU activations)
-   - LSTM layers: Glorot uniform initialization
+   - GRU layers: Glorot uniform initialization
    - Ensures proper gradient flow from the start
 
 2. **Training Loop**:
@@ -953,7 +953,7 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
 1. **Grid Search** (for key hyperparameters):
    - Learning rate: [0.0001, 0.001, 0.01]
    - Batch size: [16, 32, 64]
-   - LSTM units: [32, 64, 128]
+   - GRU units: [32, 64, 128]
 
 2. **Random Search** (for broader exploration):
    - Dropout rates
@@ -1117,8 +1117,8 @@ After model selection and hyperparameter tuning based on validation performance:
    - Behavior under different data conditions
 
 4. **Interpretability**:
-   - FNN: Feature importance analysis
-   - LSTM: Attention mechanism (if implemented)
+   - CNN: Feature importance analysis, convolutional filter visualization
+   - GRU: Attention mechanism (if implemented), temporal activation patterns
    - Hybrid: Contribution of each branch
 
 **Statistical Significance Testing**:
@@ -1203,7 +1203,7 @@ Performance is analyzed across different conditions:
    import tensorflow as tf
    from tensorflow import keras
    from tensorflow.keras.models import Sequential, Model
-   from tensorflow.keras.layers import Dense, LSTM, Dropout, Concatenate
+   from tensorflow.keras.layers import Dense, GRU, Dropout, Concatenate, Conv1D
    from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
    from tensorflow.keras.optimizers import Adam
    ```
@@ -1306,22 +1306,22 @@ def predict():
 
    ```python
    # Save model (both .keras and .h5 formats for compatibility)
-   model.save('models/fnn_model.keras')
-   model.save('models/fnn_model.h5')
+   model.save('models/cnn_model.keras')
+   model.save('models/cnn_model.h5')
    
    # Save scaler
    import pickle
-   with open('models/fnn_scaler.pkl', 'wb') as f:
+   with open('models/cnn_scaler.pkl', 'wb') as f:
        pickle.dump(scaler, f)
    ```
 
 2. **Loading for Inference**:
    ```python
    # Load model
-   model = keras.models.load_model('models/fnn_model.keras')
+   model = keras.models.load_model('models/cnn_model.keras')
    
    # Load scalers and encoders
-   with open('models/fnn_scaler.pkl', 'rb') as f:
+   with open('models/cnn_scaler.pkl', 'rb') as f:
        scaler = pickle.load(f)
    with open('models/le_crop.pkl', 'rb') as f:
        le_crop = pickle.load(f)
@@ -1563,9 +1563,9 @@ This chapter has presented a comprehensive methodology for assessing the impact 
 2. **Rigorous Preprocessing**: Comprehensive data cleaning, handling of missing values and outliers, and sophisticated feature engineering to create master datasets combining monthly climate sequences, soil properties, and actual reported yields at the state level, with informative representations of climate-agriculture relationships.
 
 3. **Advanced Modeling**: Development of three deep learning architectures:
-   - Feedforward Neural Networks (FNN) for capturing non-linear relationships
-   - Long Short-Term Memory (LSTM) networks for temporal pattern recognition
-   - Hybrid FNN-LSTM models combining spatial and temporal processing
+   - Convolutional Neural Networks (CNN) for capturing spatial-temporal patterns through 1D convolutions
+   - Gated Recurrent Unit (GRU) networks for temporal pattern recognition with efficient parameter usage
+   - Hybrid CNN-GRU models combining convolutional feature extraction with recurrent temporal processing
 
 4. **Robust Evaluation**: Multi-faceted assessment using regression metrics (RMSE, MAE, R²) and classification metrics (accuracy, precision, recall, F1-score), with time-series cross-validation ensuring temporal validity.
 
