@@ -4,9 +4,9 @@
 
 This chapter presents the systematic approach employed to assess the impact of climate change on food security in Nigeria using deep learning techniques. The methodology is designed to achieve the research aim of developing predictive models that can accurately forecast food security outcomes based on climate variables, specifically rainfall, temperature, and CO₂ levels.
 
-The research adopts a quantitative, data-driven approach that leverages advanced deep learning architectures to model the complex, non-linear relationships between climate variables and agricultural productivity. This methodology aligns with the research objectives by: (1) enabling the design of robust deep learning models for food security prediction, (2) facilitating the implementation of Feedforward Neural Networks (FNN) and Long Short-Term Memory (LSTM) models using Python libraries, and (3) providing a framework for comprehensive model evaluation using standard performance metrics.
+The research adopts a quantitative, data-driven approach that leverages advanced deep learning architectures to model the complex, non-linear relationships between climate variables and agricultural productivity. This methodology aligns with the research objectives by: (1) enabling the design of robust deep learning models for food security prediction, (2) facilitating the implementation of Convolutional Neural Networks (CNN) and Gated Recurrent Unit (GRU) models using Python libraries, and (3) providing a framework for comprehensive model evaluation using standard performance metrics.
 
-The selection of a quantitative approach is justified by the nature of the research problem, which requires the analysis of large-scale temporal and spatial datasets to identify patterns and make predictions. Traditional statistical methods have proven inadequate for capturing the intricate interactions between climate variables and crop yields, as discussed in Chapter 2. Deep learning models, particularly FNN and LSTM architectures, offer the capability to learn hierarchical representations from data and capture both spatial patterns and temporal dependencies that are critical for accurate food security forecasting (Lionel et al., 2025; Yakubu et al., 2024).
+The selection of a quantitative approach is justified by the nature of the research problem, which requires the analysis of large-scale temporal and spatial datasets to identify patterns and make predictions. Traditional statistical methods have proven inadequate for capturing the intricate interactions between climate variables and crop yields, as discussed in Chapter 2. Deep learning models, particularly CNN and GRU architectures, offer the capability to learn hierarchical representations from data and capture both spatial patterns and temporal dependencies that are critical for accurate food security forecasting (Lionel et al., 2025; Yakubu et al., 2024).
 
 The methodology is structured in a phased approach comprising data collection, preprocessing, model development, evaluation, and deployment. This systematic progression ensures scientific rigor and reproducibility while maintaining focus on practical applicability for Nigerian agriculture.
 
@@ -22,7 +22,7 @@ The research framework is structured around five primary phases:
 
 2. **Data Preparation Phase**: Comprehensive preprocessing including cleaning, transformation, feature engineering, and dataset splitting to prepare data for model training.
 
-3. **Model Development Phase**: Design, implementation, and training of deep learning models (FNN, LSTM, and hybrid architectures) using the prepared datasets.
+3. **Model Development Phase**: Design, implementation, and training of deep learning models (CNN, GRU, and hybrid CNN-GRU architectures) using the prepared datasets.
 
 4. **Model Evaluation Phase**: Rigorous assessment of model performance using multiple metrics and validation strategies to ensure reliability and generalizability.
 
@@ -32,15 +32,15 @@ The research framework is structured around five primary phases:
 
 The experimental design involves comparing multiple deep learning architectures to identify the most effective approach for food security prediction. The study examines three primary model configurations:
 
-- **Feedforward Neural Network (FNN)**: Serving as a baseline for capturing non-linear relationships between aggregated climate features and crop yields.
-- **Long Short-Term Memory Network (LSTM)**: Designed to capture temporal dependencies and sequential patterns in time-series climate data.
-- **Hybrid FNN-LSTM Model**: Combining the strengths of both architectures to process static features and temporal sequences simultaneously.
+- **Convolutional Neural Network (CNN)**: Serving as a baseline for capturing spatial-temporal patterns in sequential climate features through 1D convolutions.
+- **Gated Recurrent Unit Network (GRU)**: Designed to capture temporal dependencies and sequential patterns in time-series climate data with improved computational efficiency over LSTM.
+- **Hybrid CNN-GRU Model**: Combining the strengths of both architectures to process temporal sequences (via CNN and GRU) and static features simultaneously.
 
 This comparative approach allows for a comprehensive understanding of how different architectural choices affect prediction accuracy and provides insights into the nature of climate-agriculture relationships.
 
 ### **3.2.3 Scope and Limitations**
 
-The research focuses on Nigeria's agricultural sector, with particular emphasis on five major staple crops: Rice, Maize, Cassava, Yams, and Sorghum. These crops were selected based on: (1) their critical contribution to national food security and nutrition, (2) representation of different crop types (cereals, tubers, pulses) with varying climate sensitivities, (3) cultivation across diverse Nigerian agro-ecological zones, (4) significant economic importance to smallholder farmers, and (5) availability of comprehensive subnational yield data from HarvestStat-Africa.
+The research focuses on Nigeria's agricultural sector, with particular emphasis on three major staple crops: Maize, Cassava, and Yams. These crops were selected based on: (1) their critical contribution to national food security and nutrition, (2) representation of different crop types (cereals and tubers) with varying climate sensitivities, (3) cultivation across diverse Nigerian agro-ecological zones, (4) significant economic importance to smallholder farmers, and (5) availability of comprehensive subnational yield data from HarvestStat-Africa covering all 37 Nigerian states.
 
 The temporal scope covers historical data spanning 25 years (1999-2023) for crop yields and 34 years (1990-2023) for climate variables, providing sufficient data volume for training robust deep learning models while capturing various climate patterns including normal conditions, droughts, and floods. Geographic coverage encompasses all 37 Nigerian states with state-level (Admin-1) agricultural production data, enabling detailed subnational analysis across Nigeria's six geopolitical zones (North-Central, North-East, North-West, South-East, South-South, and South-West).
 
@@ -405,36 +405,37 @@ This section details the architecture, design decisions, and training procedures
 
 Three model architectures are developed and compared:
 
-#### **Feedforward Neural Network (FNN)**
+#### **Convolutional Neural Network (CNN)**
 
-**Justification**: FNNs serve as a strong baseline for modeling non-linear relationships between aggregated climate features and crop yields. They are particularly effective when:
-- Features are derived through extensive feature engineering
-- Temporal information is captured through aggregated statistics
-- Computational efficiency is important
-- Interpretability through feature importance is desired
+**Justification**: CNNs serve as a strong baseline for modeling spatial-temporal patterns in sequential climate features. They are particularly effective when:
+- Features have local temporal structure that can be captured through 1D convolutions
+- Temporal information is processed through sliding windows
+- Computational efficiency is important compared to recurrent architectures
+- Feature extraction from sequences is needed before classification
 
-**Use Case**: Predicting annual crop yields based on summarized growing season climate conditions.
+**Use Case**: Predicting crop yields based on 12-month climate sequences using 1D convolutions to extract temporal patterns.
 
-#### **Long Short-Term Memory Network (LSTM)**
+#### **Gated Recurrent Unit Network (GRU)**
 
-**Justification**: LSTMs are selected for their superior ability to:
+**Justification**: GRUs are selected for their superior ability to:
 - Process sequential time-series data directly
-- Capture long-term temporal dependencies
-- Learn patterns across multiple time scales
+- Capture temporal dependencies with fewer parameters than LSTM
+- Learn patterns across multiple time scales efficiently
 - Remember critical past events that influence current outcomes
-- Model the sequential nature of crop growth stages
+- Model the sequential nature of crop growth stages with reduced computational cost
 
-**Use Case**: Predicting crop yields using monthly climate sequences throughout the growing season.
+**Use Case**: Predicting crop yields using monthly climate sequences throughout the growing season with efficient recurrent processing.
 
-#### **Hybrid FNN-LSTM Model**
+#### **Hybrid CNN-GRU Model**
 
 **Justification**: The hybrid architecture combines the strengths of both models:
-- LSTM branch processes temporal climate sequences
-- FNN branch handles static features (soil, location, crop type)
-- Integration layer fuses both information types
+- CNN branch extracts local temporal patterns from climate sequences
+- GRU branch processes extracted features to capture long-term dependencies
+- Separate branch handles static features (soil, location, crop type)
+- Integration layer fuses temporal and static information
 - Captures both temporal dynamics and spatial/contextual factors
 
-**Use Case**: Comprehensive prediction incorporating sequential climate data and static environmental factors.
+**Use Case**: Comprehensive prediction incorporating sequential climate data processed through CNN-GRU pipeline and static environmental factors.
 
 ### **3.5.2 Model Architecture**
 
