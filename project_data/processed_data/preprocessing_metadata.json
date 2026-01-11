@@ -1,55 +1,35 @@
 {
-  "creation_date": "2025-12-27",
+  "creation_date": "2026-01-09",
   "random_seed": 42,
   "crops": [
-    "Millet",
-    "Sorghum",
-    "Groundnuts",
-    "Oil palm fruit",
-    "Cocoa beans"
+    "Maize",
+    "Rice",
+    "Cassava",
+    "Yams"
   ],
   "zones": [
-    "North-West",
-    "North-East",
-    "North-Central",
-    "South-West",
-    "South-East",
-    "South-South"
+    "North West",
+    "North East",
+    "North Central",
+    "South West",
+    "South East",
+    "South South"
   ],
   "temporal_coverage": {
-    "start": 1990,
+    "start": 2000,
     "end": 2023,
-    "years": 34
+    "years": 24
   },
   "splits": {
-    "train": "1990-2016",
-    "val": "2017-2019",
-    "test": "2020-2023"
+    "train": "2000-2017",
+    "val": "2018-2020",
+    "test": "2021-2023"
   },
   "datasets": {
-    "fnn": {
-      "records": 12120,
+    "cnn": {
+      "records": 6912,
       "features": [
-        "Zone",
-        "Crop",
-        "Year",
-        "Yield_kg_per_ha",
-        "Temperature_C",
-        "Rainfall_mm",
-        "Humidity_percent",
-        "CO2_ppm",
-        "Avg_pH",
-        "Avg_Nitrogen_ppm",
-        "Avg_Phosphorus_ppm",
-        "Avg_Organic_Matter_Percent",
-        "Month",
-        "Growing_Season"
-      ]
-    },
-    "lstm": {
-      "records": 145440,
-      "features": [
-        "Zone",
+        "Region",
         "Crop",
         "Year",
         "Month",
@@ -64,13 +44,72 @@
         "Yield_kg_per_ha",
         "GDD",
         "Cumulative_Rainfall",
-        "Days_Into_Season"
+        "Days_Into_Season",
+        "pH_Temperature_Interaction",
+        "Nitrogen_Rainfall_Interaction",
+        "Is_Rainy_Season",
+        "Is_Peak_Growing",
+        "Heat_Stress",
+        "Cold_Stress",
+        "Rainfall_Anomaly",
+        "Drought_Risk",
+        "Flood_Risk",
+        "Yield_Lag_1",
+        "Yield_Lag_2",
+        "Yield_Lag_3",
+        "Yield_MA_3yr",
+        "Temp_MA_3yr",
+        "Rain_MA_3yr",
+        "Yield_YoY_Change",
+        "Temp_YoY_Change",
+        "Rain_YoY_Change",
+        "Yield_Volatility_3yr"
+      ]
+    },
+    "gru": {
+      "records": 6912,
+      "features": [
+        "Region",
+        "Crop",
+        "Year",
+        "Month",
+        "Temperature_C",
+        "Rainfall_mm",
+        "Humidity_percent",
+        "CO2_ppm",
+        "Avg_pH",
+        "Avg_Nitrogen_ppm",
+        "Avg_Phosphorus_ppm",
+        "Avg_Organic_Matter_Percent",
+        "Yield_kg_per_ha",
+        "GDD",
+        "Cumulative_Rainfall",
+        "Days_Into_Season",
+        "pH_Temperature_Interaction",
+        "Nitrogen_Rainfall_Interaction",
+        "Is_Rainy_Season",
+        "Is_Peak_Growing",
+        "Heat_Stress",
+        "Cold_Stress",
+        "Rainfall_Anomaly",
+        "Drought_Risk",
+        "Flood_Risk",
+        "Yield_Lag_1",
+        "Yield_Lag_2",
+        "Yield_Lag_3",
+        "Yield_MA_3yr",
+        "Temp_MA_3yr",
+        "Rain_MA_3yr",
+        "Yield_YoY_Change",
+        "Temp_YoY_Change",
+        "Rain_YoY_Change",
+        "Yield_Volatility_3yr"
       ]
     },
     "hybrid": {
-      "records": 145440,
+      "records": 6912,
       "features": [
-        "Zone",
+        "Region",
         "Crop",
         "Year",
         "Month",
@@ -85,7 +124,26 @@
         "Yield_kg_per_ha",
         "GDD",
         "Cumulative_Rainfall",
-        "Days_Into_Season"
+        "Days_Into_Season",
+        "pH_Temperature_Interaction",
+        "Nitrogen_Rainfall_Interaction",
+        "Is_Rainy_Season",
+        "Is_Peak_Growing",
+        "Heat_Stress",
+        "Cold_Stress",
+        "Rainfall_Anomaly",
+        "Drought_Risk",
+        "Flood_Risk",
+        "Yield_Lag_1",
+        "Yield_Lag_2",
+        "Yield_Lag_3",
+        "Yield_MA_3yr",
+        "Temp_MA_3yr",
+        "Rain_MA_3yr",
+        "Yield_YoY_Change",
+        "Temp_YoY_Change",
+        "Rain_YoY_Change",
+        "Yield_Volatility_3yr"
       ]
     }
   }

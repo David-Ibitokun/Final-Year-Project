@@ -1,0 +1,106 @@
+{
+  "results": {
+    "Rice": {
+      "states_count": 37,
+      "expected_state_year_combos": 925,
+      "complete_combos": 906,
+      "percent_complete": 97.95,
+      "missing_combos": 19,
+      "nan_issues": 3,
+      "missing_examples": [
+        {
+          "admin_1": "Delta",
+          "planting_year": 1999,
+          "indicator": 1,
+          "complete": false
+        },
+        {
+          "admin_1": "Edo",
+          "planting_year": 2008,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Federal Capital Territory",
+          "planting_year": 2005,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Federal Capital Territory",
+          "planting_year": 2006,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Federal Capital Territory",
+          "planting_year": 2007,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Jigawa",
+          "planting_year": 2007,
+          "indicator": 1,
+          "complete": false
+        },
+        {
+          "admin_1": "Oyo",
+          "planting_year": 2004,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Oyo",
+          "planting_year": 2005,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Oyo",
+          "planting_year": 2006,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Oyo",
+          "planting_year": 2007,
+          "indicator": 1,
+          "complete": false
+        },
+        {
+          "admin_1": "Oyo",
+          "planting_year": 2008,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Oyo",
+          "planting_year": 2009,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Rivers",
+          "planting_year": 1999,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Rivers",
+          "planting_year": 2000,
+          "indicator": 0,
+          "complete": false
+        },
+        {
+          "admin_1": "Rivers",
+          "planting_year": 2002,
+          "indicator": 0,
+          "complete": false
+        }
+      ],
+      "nan_examples": [
+        [
+          "Rice",
+          "Delta",
+          

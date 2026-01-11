@@ -1,0 +1,5 @@
+query,product_sample,states,min_year,max_year,years_count,expected_combos,complete_combos,percent_complete
+cowpea,Cowpea,37,1999,2023,25,925,838,90.59
+tomato,Tomato,34,2010,2023,14,476,431,90.55
+okra,Okras,37,2010,2021,12,444,406,91.44
+cotton,Cotton,18,1999,2023,25,450,283,62.89
