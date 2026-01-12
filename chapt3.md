@@ -426,7 +426,7 @@ Three model architectures are developed and compared:
 
 **Use Case**: Predicting crop yields using monthly climate sequences throughout the growing season with efficient recurrent processing.
 
-#### **Hybrid CNN-GRU Model**
+#### **Hybrid CNN-GRU Model Architecture**
 
 **Justification**: The hybrid architecture combines the strengths of both models:
 - CNN branch extracts local temporal patterns from climate sequences
@@ -436,6 +436,44 @@ Three model architectures are developed and compared:
 - Captures both temporal dynamics and spatial/contextual factors
 
 **Use Case**: Comprehensive prediction incorporating sequential climate data processed through CNN-GRU pipeline and static environmental factors.
+
+**Dual-Input Architecture**:
+
+**Temporal Branch** (processes 12-month climate sequences):
+- **Input**: (sequence_length=12, n_temporal_features)
+
+- **CNN Layers** with residual connections:
+  - Conv1D: 64 filters, kernel 3, L2(0.001), BatchNorm, MaxPool, Dropout(0.4)
+  - Conv1D: 128 filters, kernel 3, L2(0.001), BatchNorm, Dropout(0.4)
+  - Conv1D: 256 filters, kernel 3, L2(0.001), BatchNorm, Dropout(0.3)
+
+- **Bidirectional GRU Layers** with enhanced regularization:
+  - BiGRU 1: 96 units (192 output), return_sequences=True, L2(0.01), Dropout(0.3)
+  - BiGRU 2: 64 units (128 output), return_sequences=False, L2(0.01), Dropout(0.3)
+  - BatchNormalization after each layer
+
+**Static Branch** (processes soil, location, crop features):
+- **Input**: (n_static_features)
+
+- **Dense Layers** with regularization:
+  - Dense: 128 neurons, ReLU, L2(0.01), BatchNorm, Dropout(0.4)
+  - Dense: 96 neurons, ReLU, L2(0.01), BatchNorm, Dropout(0.35)
+  - Dense: 64 neurons, ReLU, L2(0.01), BatchNorm, Dropout(0.3)
+
+**Fusion Layer** (merges temporal and static information):
+- Concatenate temporal and static outputs
+- Dense: 192 neurons, ReLU, L2(0.01), BatchNorm, Dropout(0.45)
+- Dense: 96 neurons, ReLU, L2(0.01), BatchNorm, Dropout(0.4)
+- Residual connection for gradient flow
+- Dense: 48 neurons, ReLU, L2(0.01), BatchNorm, Dropout(0.35)
+
+**Output Layer**:
+- 3 neurons with softmax activation
+- Output: Probability distribution over yield categories
+
+**Loss Function**: Focal Loss (gamma=3.0, alpha=0.3) - stronger than other models to combat class imbalance
+**Optimizer**: Adam (learning_rate=0.0002, clipnorm=1.0) - lower LR for stability
+**Total Parameters**: Approximately 450,000-550,000 trainable parameters
 
 ### **3.5.2 Model Architecture**
 
@@ -546,15 +584,26 @@ Three model architectures are developed and compared:
 - Sequence length: 12 months (one growing season)
 - Features per timestep: 4-6 (monthly rainfall, temperature, humidity, CO₂, derived climate indices)
 
-**GRU Layers**:
-- Architecture: 2 stacked GRU layers with return sequences
-- Layer 1: 128 GRU units, return_sequences=True
-  - Processes input sequences and passes full sequence to next layer
-- Layer 2: 64 GRU units, return_sequences=False
-  - Processes sequences and outputs final hidden state
-- Activation Functions:
-  - Sigmoid (σ) for gates: Controls information flow
-  - Tanh for candidate activation: Scales values to [-1, 1]
+**GRU Layers**: Three stacked Bidirectional GRU layers
+- **GRU Layer 1**: 
+  - 128 Bidirectional GRU units (256 total outputs), return_sequences=True
+  - L2 regularization (0.002) on kernel and recurrent connections
+  - Recurrent dropout: 0.2
+  - Standard dropout: 0.2
+  - Passes full sequence to next layer
+
+- **GRU Layer 2**:
+  - 96 Bidirectional GRU units (192 total outputs), return_sequences=True
+  - L2 regularization (0.002)
+  - Recurrent dropout: 0.2
+  - Standard dropout: 0.3
+
+- **GRU Layer 3**:
+  - 64 Bidirectional GRU units (128 total outputs), return_sequences=False
+  - L2 regularization (0.002)
+  - Recurrent dropout: 0.2
+  - Standard dropout: 0.3
+  - Outputs final hidden state only
 
 **GRU Cell Operations**:
 ```
@@ -566,15 +615,21 @@ Hidden State: h_t = (1 - z_t) * h_{t-1} + z_t * h̃_t
 
 **Regularization**:
 - Recurrent Dropout: 0.2 on GRU connections
-- Standard Dropout: 0.3 after GRU layers
-- Gradient Clipping: Prevents exploding gradients
+- Standard Dropout: 0.2-0.3 after each GRU layer
+- Gradient Clipping: clipnorm=1.0 prevents exploding gradients
+- L2 regularization: 0.002 on all recurrent layers
 
 **Dense Layers**:
-- Fully connected layer: 32 neurons with ReLU activation
-- Dropout: 0.3
-- Output layer: As described for CNN
+- Layer 1: 64 neurons, ReLU, L2(0.002), BatchNorm, Dropout(0.4)
+- Layer 2: 32 neurons, ReLU, L2(0.001), Dropout(0.3)
 
-**Total Parameters**: Approximately 80,000-120,000 trainable parameters
+**Output Layer**:
+- 3 neurons with softmax activation
+- Output: Probability distribution over yield categories
+
+**Loss Function**: Focal Loss (gamma=2.0, alpha=0.25)
+**Optimizer**: Adam (learning_rate=0.0003, clipnorm=1.0)
+**Total Parameters**: Approximately 180,000-220,000 trainable parameters
 
 **GRU Architecture Diagram**:
 
@@ -835,7 +890,57 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
   → Hybrid model captures this state-specific interaction!
 ```
 
-### **3.5.3 Training Process**
+### **3.5.3 Custom SafeModelCheckpoint Implementation**
+
+To handle Windows file system locking issues with h5py during model checkpoint saves, a custom callback was implemented:
+
+```python
+class SafeModelCheckpoint(callbacks.Callback):
+    def __init__(self, filepath, monitor='val_accuracy'):
+        super().__init__()
+        self.filepath = filepath
+        self.monitor = monitor
+        self.best = -float('inf')
+        
+    def on_epoch_end(self, epoch, logs=None):
+        current = logs.get(self.monitor)
+        if current is None:
+            return
+            
+        if current > self.best:
+            print(f"\nEpoch {epoch + 1}: {self.monitor} improved from {self.best:.5f} to {current:.5f}")
+            self.best = current
+            # Close any existing file handles
+            gc.collect()
+            time.sleep(0.1)
+            # Save with retry logic
+            for attempt in range(3):
+                try:
+                    # Remove old file first
+                    if os.path.exists(self.filepath):
+                        os.remove(self.filepath)
+                        time.sleep(0.1)
+                    self.model.save_weights(self.filepath)
+                    print(f"  Saved model to {self.filepath}")
+                    break
+                except Exception as e:
+                    if attempt < 2:
+                        print(f"  Save attempt {attempt + 1} failed, retrying...")
+                        gc.collect()
+                        time.sleep(0.5)
+                    else:
+                        print(f"  Warning: Could not save checkpoint: {e}")
+```
+
+**Key Features**:
+1. **File Handle Management**: Uses garbage collection to release h5py file handles
+2. **Retry Logic**: Three attempts with increasing delays (0.1s, 0.5s)
+3. **Pre-save Cleanup**: Removes old checkpoint file before saving new one
+4. **Graceful Error Handling**: Continues training even if save fails
+
+This callback prevents OSError [Errno 22] that occurs when h5py maintains locks on checkpoint files during training, a common issue on Windows file systems. The implementation ensures reliable model saving across all three architectures (CNN, GRU, Hybrid) without training interruption.
+
+### **3.5.4 Training Process**
 
 #### **Loss Functions**
 
@@ -899,25 +1004,35 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
 
 #### **Regularization Techniques**
 
+**Applied Regularization Strategy** (as implemented in phase3_model_dev.ipynb):
+
 1. **Dropout**:
-   - Rates: 0.2-0.3 depending on layer position
+   - CNN: 0.3-0.5 (higher in later layers)
+   - GRU: 0.2-0.4 (standard + recurrent dropout)
+   - Hybrid: 0.3-0.45 (strongest regularization to combat overfitting)
    - Applied during training only
    - Purpose: Prevent co-adaptation of neurons
 
 2. **Early Stopping**:
    - Monitor: Validation loss
-   - Patience: 15 epochs (training stops if no improvement for 15 consecutive epochs)
-   - Restore: Best weights based on validation performance
+   - Patience: 35 epochs (CNN/GRU), 40 epochs (Hybrid)
+   - Restore: Best weights based on validation accuracy
    - Purpose: Prevent overfitting while maximizing learning
 
 3. **L2 Regularization** (Weight Decay):
-   - Applied to dense layers: 0.0001
+   - CNN: 0.001-0.002 on convolutional and dense layers
+   - GRU: 0.002 on recurrent layers
+   - Hybrid: 0.01 on GRU/dense layers (stronger to prevent memorization)
    - Penalty term: λ * Σ(weights²)
-   - Purpose: Constrain weight magnitudes
+   - Purpose: Constrain weight magnitudes and reduce overfitting
 
 4. **Batch Normalization**:
-   - Applied before activation functions in deep layers
+   - Applied after each major layer (Conv/GRU/Dense)
    - Purpose: Stabilize training, allow higher learning rates
+
+5. **Gradient Clipping**:
+   - clipnorm=1.0 in all optimizers
+   - Prevents exploding gradients in deep architectures
 
 #### **Training Procedure**
 
@@ -928,18 +1043,30 @@ Final Prediction: 2.35 mt/ha (Rice yield for Benue State, 2020)
 
 2. **Training Loop**:
    ```
-   For each epoch:
+   For each epoch (max 300 epochs):
        For each batch in training data:
            1. Forward pass: Compute predictions
-           2. Compute loss
+           2. Compute focal loss (handles class imbalance)
            3. Backward pass: Compute gradients
-           4. Update weights using optimizer
+           4. Clip gradients (clipnorm=1.0)
+           5. Update weights using Adam optimizer
        
        Evaluate on validation set
-       Apply learning rate scheduling
+       Apply ReduceLROnPlateau if val_loss plateaus
+       SafeModelCheckpoint saves if val_accuracy improves
        Check early stopping condition
-       Save model if validation performance improves
+   
+   Training stops when:
+   - Early stopping triggered (35-40 epochs no improvement), OR
+   - Maximum 300 epochs reached
    ```
+
+3. **Actual Training Results**:
+   - CNN: Trained with early stopping around epoch 40-60
+   - GRU: Trained with early stopping around epoch 45-65
+   - Hybrid: Trained with early stopping around epoch 50-70
+   - All models used 3x data augmentation
+   - Batch sizes: 32 (CNN/GRU), 24 (Hybrid)
 
 3. **Monitoring and Logging**:
    - Training loss per epoch
