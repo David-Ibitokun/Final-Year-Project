@@ -15,7 +15,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.markdown('<h1 style="text-align: center; color: #2E7D32;">📊 Model Comparison</h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align: center; color: #ffffff;">📊 Model Comparison</h1>', unsafe_allow_html=True)
 
 st.write("""
 Compare the performance of CNN, GRU, and Hybrid models across different metrics and scenarios.
@@ -99,7 +99,7 @@ with tab1:
     
     with col3:
         st.success("""
-        **🔸 Hybrid Model**
+        **⚡ Hybrid Model**
         - Highest accuracy
         - Comprehensive feature learning
         - Best for: Critical decisions
@@ -236,7 +236,7 @@ with tab3:
         """)
     
     else:  # Hybrid
-        st.markdown("#### 🔸 Hybrid (CNN + GRU)")
+        st.markdown("#### ⚡ Hybrid (CNN + GRU)")
         st.write("""
         **Architecture:**
         ```

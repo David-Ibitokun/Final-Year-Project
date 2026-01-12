@@ -17,7 +17,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.markdown('<h1 style="text-align: center; color: #2E7D32;">🔍 Data Explorer</h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align: center; color: #ffffff;">🔍 Data Explorer</h1>', unsafe_allow_html=True)
 
 st.write("""
 Explore the dataset used to train the prediction models.
