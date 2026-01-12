@@ -7,30 +7,24 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
-from pathlib import Path
 
-def show_comparison():
-    """Display model comparison interface"""
-    
-    st.write("""
-    Compare the performance of CNN, GRU, and Hybrid models across different metrics and scenarios.
-    """)
-    
-    # Tabs for different comparison views
-    tab1, tab2, tab3 = st.tabs(["📊 Performance Metrics", "📈 Prediction Comparison", "⚙️ Model Details"])
-    
-    with tab1:
-        show_performance_metrics()
-    
-    with tab2:
-        show_prediction_comparison()
-    
-    with tab3:
-        show_model_details()
+# Page configuration
+st.set_page_config(
+    page_title="Model Comparison",
+    page_icon="📊",
+    layout="wide"
+)
 
-def show_performance_metrics():
-    """Display performance metrics comparison"""
-    
+st.markdown('<h1 style="text-align: center; color: #2E7D32;">📊 Model Comparison</h1>', unsafe_allow_html=True)
+
+st.write("""
+Compare the performance of CNN, GRU, and Hybrid models across different metrics and scenarios.
+""")
+
+# Tabs for different comparison views
+tab1, tab2, tab3 = st.tabs(["📊 Performance Metrics", "📈 Prediction Comparison", "⚙️ Model Details"])
+
+with tab1:
     st.markdown("### Model Performance Comparison")
     
     # Simulated metrics (replace with actual metrics from your trained models)
@@ -111,9 +105,7 @@ def show_performance_metrics():
         - Best for: Critical decisions
         """)
 
-def show_prediction_comparison():
-    """Show side-by-side prediction comparison"""
-    
+with tab2:
     st.markdown("### Comparative Prediction Analysis")
     
     st.write("Compare how different models predict yields under the same conditions.")
@@ -123,7 +115,7 @@ def show_prediction_comparison():
     
     with col1:
         st.markdown("#### Scenario Settings")
-        crop = st.selectbox("Crop", ["Millet", "Sorghum", "Groundnuts", "Oil palm fruit", "Cocoa beans"])
+        crop = st.selectbox("Crop", ["Yam", "Cassava", "Maize"])
         zone = st.selectbox("Zone", ["North-Central", "North-East", "North-West", "South-East", "South-South", "South-West"])
         temperature = st.slider("Temperature (°C)", 20.0, 35.0, 27.5)
         rainfall = st.slider("Rainfall (mm)", 500.0, 2500.0, 1200.0)
@@ -168,9 +160,7 @@ def show_prediction_comparison():
         with metric_col2:
             st.metric("Std Deviation", f"{std_pred:.3f}")
 
-def show_model_details():
-    """Show detailed model architecture information"""
-    
+with tab3:
     st.markdown("### Model Architecture Details")
     
     # Model selection

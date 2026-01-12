@@ -4,42 +4,36 @@ Data Explorer Page
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
+from scipy import stats
 
-def show_data_explorer():
-    """Display data exploration interface"""
-    
-    st.write("""
-    Explore the dataset used to train the prediction models.
-    """)
-    
-    # Tabs for different data views
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Dataset Overview", "🌡️ Climate Data", "🌾 Crop Data", "📈 Trends"])
-    
-    with tab1:
-        show_dataset_overview()
-    
-    with tab2:
-        show_climate_data()
-    
-    with tab3:
-        show_crop_data()
-    
-    with tab4:
-        show_trends()
+# Page configuration
+st.set_page_config(
+    page_title="Data Explorer",
+    page_icon="🔍",
+    layout="wide"
+)
 
-def show_dataset_overview():
-    """Display dataset overview"""
-    
+st.markdown('<h1 style="text-align: center; color: #2E7D32;">🔍 Data Explorer</h1>', unsafe_allow_html=True)
+
+st.write("""
+Explore the dataset used to train the prediction models.
+""")
+
+# Tabs for different data views
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Dataset Overview", "🌡️ Climate Data", "🌾 Crop Data", "📈 Trends"])
+
+with tab1:
     st.markdown("### Dataset Summary")
     
     # Display key statistics
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Total Records", "12,240", help="5 crops × 6 zones × 34 years × 12 months")
+        st.metric("Total Records", "12,240", help="3 crops × 6 zones × 34 years × 12 months")
     
     with col2:
         st.metric("Features", "20-35", help="Climate, soil, and categorical features")
@@ -114,9 +108,7 @@ def show_dataset_overview():
         except Exception as e:
             st.error(f"Error loading sample data: {e}")
 
-def show_climate_data():
-    """Display climate data visualizations"""
-    
+with tab2:
     st.markdown("### 🌡️ Climate Data Analysis")
     
     # Simulated climate data visualization
@@ -172,15 +164,13 @@ def show_climate_data():
         )
         st.plotly_chart(fig_humid, use_container_width=True)
 
-def show_crop_data():
-    """Display crop yield data"""
-    
+with tab3:
     st.markdown("### 🌾 Crop Yield Data")
     
     # Crop selection
     selected_crop = st.selectbox(
         "Select Crop",
-        ["Millet", "Sorghum", "Groundnuts", "Oil palm fruit", "Cocoa beans"]
+        ["Yam", "Cassava", "Maize"]
     )
     
     # Simulated crop yield by zone
@@ -221,9 +211,7 @@ def show_crop_data():
     with col4:
         st.metric("Max Yield", f"{np.max(yields):.2f} tons/ha")
 
-def show_trends():
-    """Display trend analysis"""
-    
+with tab4:
     st.markdown("### 📈 Temporal Trends")
     
     st.write("Analyze how crop yields and climate variables have changed over time.")
@@ -270,7 +258,6 @@ def show_trends():
     st.plotly_chart(fig, use_container_width=True)
     
     # Trend analysis
-    from scipy import stats
     slope, intercept, r_value, p_value, std_err = stats.linregress(years, values)
     
     col1, col2, col3 = st.columns(3)
