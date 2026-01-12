@@ -28,11 +28,24 @@ def load_config():
     except:
         return {}, {}
 
+def focal_loss_fixed(gamma=2.0, alpha=0.25):
+    """Custom focal loss function used during training"""
+    def focal_loss(y_true, y_pred):
+        import tensorflow.keras.backend as K
+        epsilon = K.epsilon()
+        y_pred = K.clip(y_pred, epsilon, 1.0 - epsilon)
+        cross_entropy = -y_true * K.log(y_pred)
+        loss = alpha * K.pow(1 - y_pred, gamma) * cross_entropy
+        return K.mean(K.sum(loss, axis=-1))
+    return focal_loss
+
 def load_model(model_type):
     """Load the specified model"""
     model_path = Path(f"models/{model_type}_model.keras")
     try:
-        model = tf.keras.models.load_model(model_path)
+        # Load model with custom objects
+        custom_objects = {'focal_loss_fixed': focal_loss_fixed()}
+        model = tf.keras.models.load_model(model_path, custom_objects=custom_objects, compile=False)
         return model
     except Exception as e:
         st.error(f"Error loading {model_type} model: {e}")
@@ -70,7 +83,7 @@ with col1:
         format_func=lambda x: {
             "cnn": "🔷 CNN (Convolutional Neural Network)",
             "gru": "🔶 GRU (Gated Recurrent Unit)",
-            "hybrid": "🔸 Hybrid (CNN + GRU)"
+                "hybrid": "⚡ Hybrid (CNN + GRU)"
         }[x],
         key="model_select"
     )
