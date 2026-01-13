@@ -33,16 +33,16 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Total Records", "12,240", help="3 crops × 6 zones × 34 years × 12 months")
+        st.metric("Total Records", "5,184", help="3 crops × 6 zones × 24 years × 12 months")
     
     with col2:
-        st.metric("Features", "20-35", help="Climate, soil, and categorical features")
+        st.metric("Features", "28", help="Climate, soil, and engineered features")
     
     with col3:
-        st.metric("Time Period", "1990-2023", help="34 years of historical data")
+        st.metric("Time Period", "2000-2023", help="24 years of historical data")
     
     with col4:
-        st.metric("Data Sources", "4", help="NASA POWER, NOAA, FAOSTAT, ISDA")
+        st.metric("Data Sources", "4", help="NASA POWER, NOAA GML, FAOSTAT, ISDA")
     
     st.markdown("---")
     
@@ -51,14 +51,14 @@ with tab1:
     
     sources_data = {
         "Data Type": ["Climate", "CO₂", "Crop Yields", "Soil"],
-        "Source": ["NASA POWER API", "NOAA ESRL", "FAOSTAT", "ISDA Soil API"],
+        "Source": ["NASA POWER API", "NOAA GML (Mauna Loa)", "FAOSTAT", "ISDA Soil API & Open-Meteo"],
         "Variables": [
             "Temperature, Rainfall, Humidity",
             "CO₂ Concentration",
             "National Crop Production",
-            "15 Soil Properties"
+            "Soil Properties & Elevation"
         ],
-        "Coverage": ["18 States", "Global", "National", "18 States"]
+        "Coverage": ["6 Zones", "Global", "National", "6 Zones"]
     }
     
     df_sources = pd.DataFrame(sources_data)
@@ -74,10 +74,12 @@ with tab1:
     with col1:
         st.markdown("#### Climate Features")
         st.write("""
-        - 🌡️ Temperature (min, max, avg)
-        - 🌧️ Rainfall (monthly, annual)
-        - 💧 Relative Humidity
-        - 🌍 CO₂ Concentration
+        - 🌡️ Temperature (°C)
+        - 🌧️ Rainfall (mm)
+        - 💧 Relative Humidity (%)
+        - 🌍 CO₂ Concentration (ppm)
+        - 📊 GDD (Growing Degree Days)
+        - 🌦️ Cumulative Rainfall
         - 📅 Seasonal indicators
         """)
     
@@ -85,11 +87,13 @@ with tab1:
         st.markdown("#### Soil Features")
         st.write("""
         - pH level
-        - Organic Carbon
-        - Nitrogen content
-        - Phosphorus
-        - Clay/Sand/Silt composition
-        - And 10 more properties...
+        - Organic Matter (%)
+        - Nitrogen (ppm)
+        - Phosphorus (ppm)
+        - Potassium
+        - Cation Exchange Capacity
+        - Bulk Density
+        - Water Holding Capacity
         """)
     
     # Sample data view
@@ -121,10 +125,10 @@ with tab2:
     )
     
     # Simulated temperature trend
-    years = list(range(1990, 2024))
+    years = list(range(2000, 2024))
     temp_data = {
         "Year": years,
-        "Temperature": [25 + 0.03 * (y - 1990) + np.random.uniform(-0.5, 0.5) for y in years]
+        "Temperature": [25 + 0.03 * (y - 2000) + np.random.uniform(-0.5, 0.5) for y in years]
     }
     
     df_temp = pd.DataFrame(temp_data)
@@ -133,7 +137,7 @@ with tab2:
         df_temp,
         x="Year",
         y="Temperature",
-        title=f"Average Temperature Trend (1990-2023) - {selected_zone}",
+        title=f"Average Temperature Trend (2000-2023) - {selected_zone}",
         labels={"Temperature": "Temperature (°C)"}
     )
     
@@ -170,7 +174,7 @@ with tab3:
     # Crop selection
     selected_crop = st.selectbox(
         "Select Crop",
-        ["Yam", "Cassava", "Maize"]
+        ["Maize", "Cassava", "Yams"]
     )
     
     # Simulated crop yield by zone
@@ -186,7 +190,7 @@ with tab3:
         df_yields,
         x="Zone",
         y="Average Yield",
-        title=f"Average {selected_crop} Yield by Zone (1990-2023)",
+        title=f"Average {selected_crop} Yield by Zone (2000-2023)",
         labels={"Average Yield": "Yield (tons/ha)"},
         color="Average Yield",
         color_continuous_scale="Greens"
@@ -223,19 +227,19 @@ with tab4:
     )
     
     # Simulated trend data
-    years = list(range(1990, 2024))
+    years = list(range(2000, 2024))
     
     if variable == "Crop Yield":
-        values = [2.5 + 0.02 * (y - 1990) + np.random.uniform(-0.3, 0.3) for y in years]
+        values = [2.5 + 0.02 * (y - 2000) + np.random.uniform(-0.3, 0.3) for y in years]
         ylabel = "Yield (tons/ha)"
     elif variable == "Temperature":
-        values = [25 + 0.03 * (y - 1990) + np.random.uniform(-0.5, 0.5) for y in years]
+        values = [25 + 0.03 * (y - 2000) + np.random.uniform(-0.5, 0.5) for y in years]
         ylabel = "Temperature (°C)"
     elif variable == "Rainfall":
         values = [1200 + np.random.uniform(-200, 200) for y in years]
         ylabel = "Rainfall (mm)"
     else:  # CO₂
-        values = [355 + 1.9 * (y - 1990) + np.random.uniform(-2, 2) for y in years]
+        values = [370 + 2.2 * (y - 2000) + np.random.uniform(-2, 2) for y in years]
         ylabel = "CO₂ (ppm)"
     
     df_trend = pd.DataFrame({"Year": years, variable: values})
@@ -246,7 +250,7 @@ with tab4:
         x="Year",
         y=variable,
         trendline="ols",
-        title=f"{variable} Trend (1990-2023)"
+        title=f"{variable} Trend (2000-2023)"
     )
     
     fig.update_traces(marker=dict(size=8))

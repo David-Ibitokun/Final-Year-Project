@@ -26,9 +26,9 @@ This research develops predictive models to forecast crop yields based on climat
 ### Data Sources
 
 - **Climate Data**: NASA POWER API (temperature, rainfall, humidity)
-- **CO₂ Data**: NOAA ESRL Global Monitoring Laboratory
-- **Crop Yields**: FAOSTAT (170 national records: 5 crops × 34 years)
-- **Soil Data**: ISDA Soil API (18 state profiles, 15 properties)
+- **CO₂ Data**: NOAA Global Monitoring Laboratory (Mauna Loa)
+- **Crop Yields**: FAOSTAT (Food and Agriculture Organization)
+- **Soil Data**: ISDA Soil API & Open-Meteo (18 state profiles + elevation)
 
 ### Data Volume
 
@@ -264,8 +264,9 @@ Static Features → FNN Branch (64-32) ────┘
 
 - **FAOSTAT**: [https://www.fao.org/faostat/](https://www.fao.org/faostat/)
 - **NASA POWER**: [https://power.larc.nasa.gov/](https://power.larc.nasa.gov/)
-- **NOAA CO₂**: [https://gml.noaa.gov/ccgg/trends/](https://gml.noaa.gov/ccgg/trends/)
+- **NOAA GML**: [https://gml.noaa.gov/ccgg/trends/](https://gml.noaa.gov/ccgg/trends/)
 - **ISDA Soil**: [https://www.isda-africa.com/](https://www.isda-africa.com/)
+- **Open-Meteo**: [https://open-meteo.com/](https://open-meteo.com/)
 
 ---
 
@@ -280,6 +281,7 @@ Final Year Project - [Ibitokun David/Bells University of Technology]
 ## Acknowledgments
 
 - Food and Agriculture Organization (FAO) for FAOSTAT data
-- NASA for POWER climate data
-- NOAA for CO₂ monitoring data
-- ISDA for African soil data
+- NASA Langley Research Center for POWER climate data
+- NOAA Global Monitoring Laboratory for CO₂ monitoring data (Mauna Loa)
+- ISDA (Innovative Solutions for Decision Agriculture) for African soil data
+- Open-Meteo for elevation data

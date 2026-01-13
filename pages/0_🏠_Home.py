@@ -69,17 +69,7 @@ with col1:
     
     # st.info("👈 Use the sidebar above to navigate to **Make Prediction** to get started!")
 
-with col2:
-    st.markdown('<h2 style="font-size: 1.5rem; color: #ffffff;">🌾 Selected Crops</h2>', unsafe_allow_html=True)
-    
-    if crop_suitability:
-        crops = [c.replace('_', ' ').title() for c in crop_suitability.keys()]
-    else:
-        crops = ["Yam", "Cassava", "Maize"]
-    
-    for crop in crops:
-        st.write(f"✓ {crop}")
-    
+with col2:    
     st.markdown('<h2 style="font-size: 1.5rem; color: #ffffff; margin-top: 2rem;">🗺️ Coverage</h2>', unsafe_allow_html=True)
     zones = ["North-Central", "North-East", "North-West", "South-East", "South-South", "South-West"]
     for zone in zones:
@@ -111,7 +101,7 @@ with model_col2:
     """)
 
 with model_col3:
-    st.markdown("### 🔸 Hybrid Model")
+    st.markdown("### ⚡ Hybrid Model")
     st.write("""
     **Combined Architecture**
     - Spatial + Temporal features
