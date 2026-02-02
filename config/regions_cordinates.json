@@ -1,0 +1,32 @@
+{
+    "North-West": {
+        "Kaduna": {"lat": 10.52, "lon": 7.44},
+        "Kano": {"lat": 12.00, "lon": 8.52},
+        "Sokoto": {"lat": 13.06, "lon": 5.24}
+    },
+    "North-East": {
+        "Borno": {"lat": 11.85, "lon": 13.09},
+        "Bauchi": {"lat": 10.31, "lon": 9.84},
+        "Adamawa": {"lat": 9.33, "lon": 12.38}
+    },
+    "North-Central": {
+        "Benue": {"lat": 7.73, "lon": 8.54},
+        "Plateau": {"lat": 9.93, "lon": 8.89},
+        "Niger": {"lat": 9.93, "lon": 6.54}
+    },
+    "South-West": {
+        "Oyo": {"lat": 7.85, "lon": 3.93},
+        "Ogun": {"lat": 7.16, "lon": 3.35},
+        "Ondo": {"lat": 7.25, "lon": 5.19}
+    },
+    "South-East": {
+        "Enugu": {"lat": 6.86, "lon": 7.39},
+        "Abia": {"lat": 5.45, "lon": 7.52},
+        "Ebonyi": {"lat": 6.27, "lon": 8.01}
+    },
+    "South-South": {
+        "Rivers": {"lat": 4.82, "lon": 7.01},
+        "Delta": {"lat": 5.68, "lon": 5.92},
+        "Akwa Ibom": {"lat": 5.01, "lon": 7.85}
+    }
+}
