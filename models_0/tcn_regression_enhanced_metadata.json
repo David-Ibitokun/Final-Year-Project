@@ -1,0 +1,70 @@
+{
+  "model_type": "TCN Regression - Enhanced with Static-Temporal Interactions",
+  "data_source": "project_data/processed_data/master_data_hybrid.csv",
+  "sequence_length": 12,
+  "features": {
+    "temporal": [
+      "Temperature_C",
+      "Rainfall_mm",
+      "Humidity_percent",
+      "CO2_ppm"
+    ],
+    "static": [
+      "Avg_pH",
+      "Avg_Nitrogen_ppm",
+      "Avg_Phosphorus_ppm",
+      "Avg_Organic_Matter_Percent"
+    ],
+    "interactions": [
+      "pH \u00d7 Temperature",
+      "N \u00d7 Rainfall",
+      "P \u00d7 Rainfall",
+      "OM \u00d7 Temperature",
+      "Rainfall / N",
+      "Rainfall / P",
+      "CO2 \u00d7 N",
+      "Humidity \u00d7 OM"
+    ],
+    "categorical": [
+      "Crop",
+      "Region"
+    ]
+  },
+  "architecture": {
+    "temporal_branch": "Conv1D(64,3) \u2192 Conv1D(64,3) \u2192 GlobalAveragePooling",
+    "static_branch": "Dense(32, relu)",
+    "interaction_branch": "Dense(32, relu)",
+    "fusion": "Concatenate \u2192 Dense(64) \u2192 Dense(32) \u2192 Dense(1, relu)"
+  },
+  "training": {
+    "epochs": 100,
+    "batch_size": 16,
+    "optimizer": "Adam (lr=0.001, clipnorm=1.0)",
+    "loss_function": "MSE",
+    "callbacks": [
+      "EarlyStopping (patience=15)",
+      "ReduceLROnPlateau (factor=0.5)"
+    ],
+    "validation_split": 0.2,
+    "sample_weights": "High-yield (2.0\u00d7), Medium (1.0\u00d7), Low (0.8\u00d7)"
+  },
+  "performance": {
+    "baseline_tcn": {
+      "MAE": 0.6579166771248278,
+      "RMSE": 0.7630288435597629,
+      "R2": 0.31197852101636925,
+      "training_time_s": 51.92739152908325
+    },
+    "enhanced_tcn": {
+      "MAE": 0.3602832468114408,
+      "RMSE": 0.5148138268964613,
+      "R2": 0.6774081214528666,
+      "training_time_s": 38.79515504837036
+    },
+    "improvement": {
+      "MAE_pct": 45.238772729409995,
+      "R2_pct": 117.13293570531529,
+      "R2_absolute": 0.3654296004364973
+    }
+  }
+}

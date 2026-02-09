@@ -1,0 +1,30 @@
+{
+  "model_type": "TCN Regression - Static-Temporal Interactions (PHASE3 FINAL)",
+  "version": "1",
+  "status": "PHASE3 COMPLETE - TARGET EXCEEDED",
+  "architecture": {
+    "temporal_branch": "Conv1D(64,3) \u00d7 2 \u2192 GlobalAveragePooling",
+    "static_branch": "Dense(32, relu) with L2(1e-4)",
+    "interaction_branch": "Dense(32, relu) with 8 engineered features",
+    "fusion": "Concatenate + Dropout(0.3) \u2192 Dense(64) \u2192 Dense(1, relu)",
+    "total_parameters": 23025
+  },
+  "performance": {
+    "test_r2": 0.6774081214528666,
+    "test_mae": 0.3602832468114408,
+    "test_rmse": 0.5148138268964613,
+    "phase3_target": 0.6171,
+    "target_exceeded": true,
+    "gap": 0.06030812145286657
+  },
+  "interaction_features": [
+    "pH \u00d7 Temperature",
+    "N \u00d7 Rainfall",
+    "P \u00d7 Rainfall",
+    "OM \u00d7 Temperature",
+    "Rainfall / N",
+    "Rainfall / P",
+    "CO2 \u00d7 N",
+    "Humidity \u00d7 OM"
+  ]
+}

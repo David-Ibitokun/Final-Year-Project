@@ -1,0 +1,41 @@
+{
+  "model_type": "Phase3 Regression - TCN Only",
+  "data_source": "project_data/processed_data/master_data_hybrid.csv",
+  "sequence_length": 3,
+  "features": {
+    "temporal": [
+      "Temperature_C",
+      "Rainfall_mm",
+      "Humidity_percent",
+      "CO2_ppm"
+    ],
+    "static": [
+      "Avg_pH",
+      "Avg_Nitrogen_ppm",
+      "Avg_Phosphorus_ppm",
+      "Avg_Organic_Matter_Percent"
+    ],
+    "categorical": [
+      "Crop",
+      "Region"
+    ]
+  },
+  "training": {
+    "epochs": 100,
+    "batch_size": 16,
+    "optimizer": "Adam (lr=0.001, clipnorm=1.0)",
+    "loss_function": "MSE",
+    "callbacks": [
+      "EarlyStopping (patience=15)",
+      "ReduceLROnPlateau (factor=0.5)"
+    ],
+    "validation_split": 0.2
+  },
+  "performance": {
+    "tcn": {
+      "MAE": 0.6579166771248278,
+      "RMSE": 0.7630288435597629,
+      "R2": 0.31197852101636925
+    }
+  }
+}
