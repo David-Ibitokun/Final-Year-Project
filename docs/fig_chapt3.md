@@ -132,7 +132,7 @@ This figure presents the detailed architecture of the TCN Regression Model with 
     │ 4 climate  │   │ properties: │   │ features:   │   │Zone ID  │
     │ variables: │   │             │   │             │   │         │
     │            │   │ • pH        │   │• pH×Temp    │   │• Crop:  │
-    │• Temp (°C) │   │ • Nitrogen  │   │• N×Rainfall │   │  0,1,2  │
+    │• Temp (°C) │   │ • Nitrogen  │   │• N×Rainfall │   │  0,1  │
     │• Rain (mm) │   │ • Phosphorus│   │• P×Rainfall │   │• Zone:  │
     │• Humidity  │   │ • Organic M │   │• OM×Temp    │   │  0-5    │
     │• CO₂ (ppm) │   │             │   │• Rain/N     │   │         │
