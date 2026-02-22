@@ -1,10 +1,130 @@
-# TCN-MLP Architecture - Visual Diagrams
+# TCN-MLP Architecture: Complete Visual Reference
 
-**Final Configuration (Gold Standard - Balanced Regularization)**  
-**Performance**: Train R²=0.8450 | Val R²=0.8191 | Test R²=0.8052  
-**Status**: Production Ready ✓ | No Overfitting | Deep Learning Achieved (73% loss reduction)
+> **Climate Change Impact on Food Security in Nigeria**  
+> Deep Learning Model for Crop Yield Prediction
 
-## Vertical Flow Diagram (Mermaid)
+---
+
+## 🎯 Quick Reference
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| **Test R²** | 0.8052 | ✅ Excellent |
+| **Model Size** | 7,305 params | ✅ Efficient |
+| **Inference** | ~2ms/prediction | ✅ Production-Ready |
+| **Generalization Gap** | 2.59% | ✅ Robust |
+| **Status** | Gold Standard | ✅ Deployed |
+
+---
+
+## 📊 Architecture At A Glance
+
+```
+INPUT: Climate Sequences + Metadata
+  │
+  ├─► TCN BRANCH (Temporal)     ─┐
+  │   [Dilated Convolutions]     │
+  │   Extract patterns over time  │  MERGE  ┌─► Output
+  │                               ├───────► ├─► Yield
+  └─► MLP BRANCH (Categorical)  ─┘        │  (kg/ha)
+      [Region + Crop Embeddings]          │
+      Learn regional sensitivity  └─► Denormalize
+```
+
+---
+
+## 🔷 PART I: TEMPORAL CONVOLUTIONAL NETWORK (TCN) BRANCH
+
+## 🔷 PART I: TEMPORAL CONVOLUTIONAL NETWORK (TCN) BRANCH
+
+### Why TCN for Climate Data?
+
+Climate sequences have **patterns at multiple time scales**:
+- **Month-to-month** variation (immediate weather)
+- **Seasonal** cycles (wet/dry seasons)  
+- **Annual** trends (ENSO variability)
+
+Dilated convolutions efficiently capture all three without the sequential bottleneck of RNNs.
+
+### TCN Input & Output
+
+```
+INPUT:  (Batch, 12 months, 12 climate features)
+         ├─ Temperature, Rainfall, Humidity
+         ├─ CO₂, Soil properties (pH, N, P, OM)
+         ├─ Days into season, Heat stress
+         
+OUTPUT: (Batch, 28) dimensional feature vector
+         "Learned climate impact signature"
+```
+
+### TCN Internal Structure
+
+```mermaid
+graph TD
+    Input["🔵 Input<br/>(B, 12, 12)<br/>12 timesteps<br/>12 features"]
+    
+    subgraph Block1["BLOCK 1: Dilation=1"]
+        B1_Conv["Conv1d × 2<br/>12→32 filters<br/>kernel=3"]
+        B1_BN["BatchNorm"]
+        B1_Act["ReLU"]
+        B1_Drop["Dropout(0.3)"]
+        B1_Skip["Skip Connection"]
+    end
+    
+    subgraph Block2["BLOCK 2: Dilation=2"]
+        B2_Conv["Conv1d × 2<br/>32→32 filters<br/>kernel=3"]
+        B2_BN["BatchNorm"]
+        B2_Act["ReLU"]
+        B2_Drop["Dropout(0.3)"]
+        B2_Skip["Skip Connection"]
+    end
+    
+    subgraph Block3["BLOCK 3: Dilation=4"]
+        B3_Conv["Conv1d × 2<br/>32→28 filters<br/>kernel=3"]
+        B3_BN["BatchNorm"]
+        B3_Act["ReLU"]
+        B3_Drop["Dropout(0.3)"]
+        B3_Skip["Skip Connection"]
+    end
+    
+    Pool["🌊 Global Average Pool<br/>(B, T, 28) → (B, 28)"]
+    Output["🔷 TCN Output<br/>(B, 28)<br/>Climate Signature"]
+    
+    Input --> B1_Conv
+    B1_Conv --> B1_BN --> B1_Act --> B1_Drop --> B1_Skip
+    
+    B1_Skip --> B2_Conv
+    B2_Conv --> B2_BN --> B2_Act --> B2_Drop --> B2_Skip
+    
+    B2_Skip --> B3_Conv
+    B3_Conv --> B3_BN --> B3_Act --> B3_Drop --> B3_Skip
+    
+    B3_Skip --> Pool --> Output
+    
+    style Block1 fill:#bbdefb,stroke:#1976d2,stroke-width:2px
+    style Block2 fill:#90caf9,stroke:#1565c0,stroke-width:2px
+    style Block3 fill:#64b5f6,stroke:#1565c0,stroke-width:2px
+    style Pool fill:#42a5f5,stroke:#1565c0,stroke-width:2px
+```
+
+### Receptive Field Growth
+
+```
+Dilation Pattern: [1, 2, 4] → Exponential Coverage
+ 
+ Month:    │J │F │M │A │M │J │J │A │S │O │N │D │
+           
+Block 1 (D=1): ▌▌  → Current & immediate neighbors
+Block 2 (D=2): ▌  ▌  → Every 2 months  
+Block 3 (D=4): ▌    ▌ → Quarterly patterns
+                  
+Combined RF: 15 months ✓ Captures annual cycles
+```
+
+---
+
+## 🟦 PART II: MULTI-LAYER PERCEPTRON (MLP) BRANCH
 
 ```mermaid
 graph TD
@@ -550,3 +670,27 @@ Key Discovery: Balanced regularization achieves both deep learning
 **Model Framework**: TensorFlow/Keras 2.10+  
 **Task**: Crop Yield Prediction from Temporal Environmental Data  
 **Status**: ✅ Production Ready | Gold Standard Performance | No Overfitting
+
+## Connection to Chapter 3: Research Methodology
+
+These diagrams visualize the TCN-MLP architecture specified in **Chapter 3, Section 3.5** of the thesis.
+
+### How Data Flows (Chapter 3, Section 3.4):
+1. Raw data from sources (NASA POWER, NOAA, HarvestStat) → `master_data_hybrid.csv`
+2. Preprocessing: Normalization, sequencing with 12-month lookback window
+3. Split: Train (70% / 2000-2017), Val (15% / 2018-2020), Test (15% / 2021-2023)
+4. Input to TCN-MLP as shown in these diagrams
+
+### Branches (Chapter 3, Sections 3.5.2 & 3.5.3):
+- **TCN Branch**: Temporal processing of 12-month climate sequences
+- **MLP Branch**: Categorical encoding of Region + Crop identity
+- **Fusion**: Combined features → yield prediction (linear output)
+
+### Training (Chapter 3, Section 3.6):
+- Loss: MSE + L2 (0.025)
+- Optimizer: Adam (lr=0.00018)  
+- Regularization: Dropout(0.63), BatchNorm, Early stopping
+- Result: Test R²=0.8184, generalization gap 2.29%
+
+**Complete architecture documentation**: `docs/TCN_MLP_Architecture.md`  
+**Full methodology**: `docs/TCN_MLP_CHAP3.md`
