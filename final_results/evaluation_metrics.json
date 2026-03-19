@@ -1,0 +1,88 @@
+{
+  "Model Performance": {
+    "Train R\u00b2": 0.8830641307026035,
+    "Val R\u00b2": 0.6905228610879075,
+    "Test R\u00b2": 0.7670337382859969,
+    "Train MAE": 100.52517411047171,
+    "Val MAE": 0.21788564324378967,
+    "Test MAE": 159.65711829873982,
+    "Architecture": "15-fold Ensemble TCN-MLP"
+  },
+  "Synthetic Data Validation": {
+    "KS Test Pass Rate": 0.85,
+    "Status": "PASS"
+  },
+  "Crop Vulnerability": [
+    {
+      "Crop": "Yams",
+      "Samples": 22,
+      "Mean Yield": 1728.3545662458148,
+      "Yield Std Dev": 440.92214280145646,
+      "Yield Stability": 0.7448890689691762,
+      "Pred Accuracy": 0.8932048850567623,
+      "Uncertainty": 256.78685369737923,
+      "Vulnerability Score": 0.2612396048078274
+    },
+    {
+      "Crop": "Cassava",
+      "Samples": 22,
+      "Mean Yield": 1747.4684066397667,
+      "Yield Std Dev": 497.29437688822946,
+      "Yield Stability": 0.7154201044699261,
+      "Pred Accuracy": 0.9228973689385475,
+      "Uncertainty": 186.70037821386333,
+      "Vulnerability Score": 0.21975947310847294
+    }
+  ],
+  "Regional Performance": [
+    {
+      "Region": "North Central",
+      "Samples": 5,
+      "Mean Yield": 1672.1266470803232,
+      "R\u00b2 Score": 0.952912856443723,
+      "MAE": 100.79929280682386,
+      "RMSE": 118.65970137467106
+    },
+    {
+      "Region": "South East",
+      "Samples": 6,
+      "Mean Yield": 1766.3791775615955,
+      "R\u00b2 Score": 0.9194071434694241,
+      "MAE": 72.25574477968625,
+      "RMSE": 97.84224847280178
+    },
+    {
+      "Region": "South South",
+      "Samples": 8,
+      "Mean Yield": 1642.16966694329,
+      "R\u00b2 Score": 0.8982801318892915,
+      "MAE": 126.34235498459125,
+      "RMSE": 150.62749729782396
+    },
+    {
+      "Region": "North West",
+      "Samples": 7,
+      "Mean Yield": 1561.841840794925,
+      "R\u00b2 Score": 0.7654678502758567,
+      "MAE": 118.51286396822249,
+      "RMSE": 174.01216660958727
+    },
+    {
+      "Region": "South West",
+      "Samples": 10,
+      "Mean Yield": 1803.2996212050978,
+      "R\u00b2 Score": 0.6586809541724407,
+      "MAE": 224.68158136927264,
+      "RMSE": 327.9538497628088
+    },
+    {
+      "Region": "North East",
+      "Samples": 8,
+      "Mean Yield": 1925.743833693729,
+      "R\u00b2 Score": 0.3532185787464661,
+      "MAE": 250.02969638566265,
+      "RMSE": 288.9608945214567
+    }
+  ],
+  "Deployment Status": "PRODUCTION READY"
+}

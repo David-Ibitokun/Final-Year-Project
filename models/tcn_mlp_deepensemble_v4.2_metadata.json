@@ -1,0 +1,81 @@
+{
+  "model_name": "TCN_MLP_DeepEnsemble_v4.2",
+  "ensemble_type": "Stratified K-Fold (k=15)",
+  "key_improvements": [
+    "Deep 15-model ensemble for variance reduction",
+    "Ultra-strong L2 regularization (1e-3) to prevent overfitting",
+    "Strong dropout (0.4) with stochastic neuron deactivation",
+    "Strict early stopping (patience=10) for strict convergence",
+    "Aggressive data augmentation (30x per sample)",
+    "Temporal shift augmentation for seasonal robustness",
+    "Uncertainty quantification via ensemble std dev"
+  ],
+  "architecture": {
+    "model_type": "TCN-MLP with Embeddings",
+    "total_parameters_per_model": 7961,
+    "ensemble_size": 15,
+    "tcn_filters": 32,
+    "tcn_kernel": 3,
+    "gap_layer": "GlobalAveragePooling1D",
+    "mlp_units": [
+      24,
+      16
+    ],
+    "embeddings": {
+      "regions": [
+        6,
+        8
+      ],
+      "crops": [
+        2,
+        4
+      ]
+    },
+    "year_features": 3,
+    "l2_regularization": 0.001,
+    "dropout_rate": 0.4,
+    "output_activation": "linear"
+  },
+  "regularization": {
+    "l2_strength": 0.001,
+    "dropout_rate": 0.4,
+    "early_stopping_patience": 10,
+    "augmentation_factor": 30,
+    "noise_std": 0.05,
+    "magnitude_scale_range": [
+      0.8,
+      1.2
+    ],
+    "label_noise_std": 0.1,
+    "temporal_shifts": [
+      0,
+      1,
+      2
+    ]
+  },
+  "data": {
+    "source": "annual_yield_hybrid.csv",
+    "total_samples": 288,
+    "train_samples": 216,
+    "val_samples": 36,
+    "test_samples": 36,
+    "n_features": 18,
+    "n_timesteps": 12,
+    "n_regions": 6,
+    "n_crops": 2,
+    "split_strategy": "Stratified temporal split"
+  },
+  "performance": {
+    "train_r2": 0.8830641307026035,
+    "train_mae": 100.52517411047171,
+    "val_r2": 0.6905228610879075,
+    "val_mae": 173.15987823113318,
+    "val_rmse": 289.85733283206963,
+    "test_r2": 0.7670337382859969,
+    "test_mae": 159.65711829873982,
+    "test_rmse": 226.87774560559004,
+    "test_mape": 9.709678598981792,
+    "mean_ensemble_uncertainty": 231.8804144195595,
+    "generalization_gap": 0.11603039241660662
+  }
+}

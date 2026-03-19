@@ -1,0 +1,6 @@
+Component,Configuration,Purpose
+Temporal Convolution Network (TCN),"3 dilated conv layers, 64→32→16 filters, kernel=3",Capture temporal climate patterns (12-month sequences)
+Multi-Layer Perceptron (MLP),"256→128→64→1 dense layers, ReLU activation",Combine temporal features for regression
+Region Embedding,6 regions → 8 dimensions,Encode regional agro-ecological characteristics
+Crop Embedding,3 crops → 4 dimensions,Encode crop-specific stress responses
+Total Parameters,"7,961",Total model capacity

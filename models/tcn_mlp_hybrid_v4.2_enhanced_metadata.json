@@ -1,0 +1,47 @@
+{
+  "model_name": "TCN_MLP_Hybrid_v4.2_Enhanced",
+  "improvements_applied": [
+    "Increased TCN filters: 16\u219232",
+    "Increased MLP units: 16/8\u219224/16",
+    "Reduced dropout: 0.3\u21920.2",
+    "Reduced L2 regularization: 1e-4\u21925e-5",
+    "Added Multi-Head Attention to TCN",
+    "Expanded ensemble: 10\u219215 models",
+    "Added polynomial year features (year, year\u00b2, year\u00b3)",
+    "Enhanced augmentation with temporal shifts"
+  ],
+  "architecture": {
+    "type": "TCN-MLP with Multi-Head Attention and embeddings",
+    "total_parameters": 7961,
+    "tcn_filters": 32,
+    "tcn_kernel": 3,
+    "attention_heads": 4,
+    "mlp_units_1": 24,
+    "mlp_units_2": 16,
+    "l2_regularization": 5e-05,
+    "dropout_rate": 0.2,
+    "ensemble_size": 15,
+    "output_activation": "linear"
+  },
+  "data": {
+    "source": "annual_yield_hybrid_enhanced.csv",
+    "n_samples": 288,
+    "n_features": 18,
+    "n_timesteps": 12,
+    "n_regions": 6,
+    "n_crops": 2,
+    "year_features": 3,
+    "augmentation_factor": 30,
+    "temporal_split": "Random Stratified (85/15/val)"
+  },
+  "performance": {
+    "train_r2": 0.9360472585224422,
+    "train_mae": 76.77313639952298,
+    "val_r2": 0.6762435374238105,
+    "val_mae": 178.70650647208262,
+    "test_r2": 0.774984090464029,
+    "test_mae": 144.74360234209965,
+    "test_rmse": 222.97285539838586,
+    "train_test_gap_pct": 16.106316805841313
+  }
+}
